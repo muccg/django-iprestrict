@@ -1,0 +1,5 @@
+    - CIDR
+    - Move Up/Down Admin Actions for rules
+    - restrict if can't figure out REMOTE_ADDR + HTTP_X_FORWARDED_FOR
+    - Make reload of rules possible without restart
+    - IPv6 support
