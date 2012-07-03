@@ -1,0 +1,64 @@
+[
+    {
+        "pk": 1,
+        "model": "iprestrict.ipgroup",
+        "fields": {
+            "name": "ALL",
+            "description": "Matches all IP Addresses"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "iprestrict.ipgroup",
+        "fields": {
+            "name": "localhost",
+            "description": "IP address of localhost"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "iprestrict.iprange",
+        "fields": {
+            "first_ip": "0.0.0.0",
+            "ip_group": 1,
+            "last_ip": "255.255.255.255"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "iprestrict.iprange",
+        "fields": {
+            "first_ip": "0:0:0:0:0:0:0:0",
+            "ip_group": 1,
+            "last_ip": "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "iprestrict.iprange",
+        "fields": {
+            "last_ip": null,
+            "first_ip": "127.0.0.1",
+            "ip_group": 2
+        }
+    },
+    {
+        "pk": 4,
+        "model": "iprestrict.iprange",
+        "fields": {
+            "last_ip": null,
+            "first_ip": "::1",
+            "ip_group": 2
+        }
+    },
+    {
+        "pk": 1,
+        "model": "iprestrict.rule",
+        "fields": {
+            "action": "D",
+            "url_pattern": "ALL",
+            "rank": 65535,
+            "ip_group": 1
+        }
+    }
+]
