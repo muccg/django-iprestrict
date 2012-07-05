@@ -40,6 +40,43 @@ class RuleTest(TestCase):
         rule1.save()
         self.assertEquals(rule1.rank, 1)
 
+class RuleWithSampleRulesTests(TestCase):
+    def setUp(self):
+        self.rule1 = models.Rule.objects.create(url_pattern='1', action='A')
+        self.rule2 = models.Rule.objects.create(url_pattern='2', action='A')
+
+    def test_default_select_order(self):
+        rules = models.Rule.objects.all()
+        self.assertEqual(rules[0].url_pattern, '1')
+        self.assertEqual(rules[1].url_pattern, '2')
+
+    def test_move_up(self):
+        self.rule2.move_up()
+        rules = models.Rule.objects.all()
+        self.assertEqual(rules[0].url_pattern, '2')
+        self.assertEqual(rules[1].url_pattern, '1')
+
+    def test_move_up_first_rule_doeas_nothing(self):
+        self.rule1.move_up()
+        rules = models.Rule.objects.all()
+        self.assertEqual(rules[0].url_pattern, '1')
+        self.assertEqual(rules[1].url_pattern, '2')
+
+    def test_move_down(self):
+        self.rule1.move_down()
+        rules = models.Rule.objects.all()
+        self.assertEqual(rules[0].url_pattern, '2')
+        self.assertEqual(rules[1].url_pattern, '1')
+
+    def test_move_down_below_default_rule(self):
+        self.rule1.move_down()
+        self.rule1.move_down()
+        rules = models.Rule.objects.all()
+        self.assertEqual(rules[0].url_pattern, '2')
+        self.assertEqual(rules[1].url_pattern, 'ALL')
+        self.assertEqual(rules[2].url_pattern, '1')
+
+
 class IPGroupTest(TestCase):
     def test_first_ip_group_is_all(self):
         '''An IP definition matching all should be inserted by default'''

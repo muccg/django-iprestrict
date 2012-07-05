@@ -92,6 +92,23 @@ class Rule(models.Model):
     is_allowed.boolean = True
     is_allowed.short_description = 'Is allowed?'
 
+    def swap_with_rule(self, other):
+        other.rank, self.rank = self.rank, other.rank
+        other.save()
+        self.save()
+
+    def move_up(self):
+        rules_above = Rule.objects.filter(rank__lt = self.rank).order_by('-rank')
+        if len(rules_above) == 0:
+            return
+        self.swap_with_rule(rules_above[0])
+
+    def move_down(self):
+        rules_below = Rule.objects.filter(rank__gt = self.rank)
+        if len(rules_below) == 0:
+            return
+        self.swap_with_rule(rules_below[0])
+
     def save(self, *args, **kwargs):
         if self.rank is None:
             max_aggr = Rule.objects.filter(rank__lt = 65000).aggregate(models.Max('rank'))
@@ -100,3 +117,4 @@ class Rule(models.Model):
                 max_rank = 0
             self.rank = max_rank + 1
         super(Rule, self).save(*args, **kwargs)
+
