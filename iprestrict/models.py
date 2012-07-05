@@ -67,7 +67,7 @@ class Rule(models.Model):
     url_pattern = models.CharField(max_length=500)
     ip_group = models.ForeignKey(IPGroup, default=1)
     action = models.CharField(max_length=1, choices=ACTION_CHOICES, default='D')
-    rank = models.IntegerField(null=True)
+    rank = models.IntegerField()
 
     @property
     def regex(self):
@@ -92,4 +92,11 @@ class Rule(models.Model):
     is_allowed.boolean = True
     is_allowed.short_description = 'Is allowed?'
 
-
+    def save(self, *args, **kwargs):
+        if self.rank is None:
+            max_aggr = Rule.objects.filter(rank__lt = 65000).aggregate(models.Max('rank'))
+            max_rank = max_aggr.get('rank__max')
+            if max_rank is None:
+                max_rank = 0
+            self.rank = max_rank + 1
+        super(Rule, self).save(*args, **kwargs)

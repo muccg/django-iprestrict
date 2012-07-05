@@ -23,6 +23,23 @@ class RuleTest(TestCase):
         self.assertFalse(rule.matches_url('/pre/e/'))
         self.assertFalse(rule.matches_url('/pre/a//'))
 
+    def test_rank_is_automatically_assigned(self):
+        rule1 = models.Rule.objects.create(url_pattern='1', action='A')
+        rule2 = models.Rule.objects.create(url_pattern='2', action='A')
+        rule10 = models.Rule.objects.create(url_pattern='10', action='A', rank=10)
+        rule11 = models.Rule.objects.create(url_pattern='10', action='A')
+        self.assertEquals(rule1.rank, 1)
+        self.assertEquals(rule2.rank, 2)
+        self.assertEquals(rule10.rank, 10)
+        self.assertEquals(rule11.rank, 11)
+
+    def test_rank_is_not_changed_on_update(self):
+        rule1 = models.Rule.objects.create(url_pattern='1', action='A')
+        rule2 = models.Rule.objects.create(url_pattern='2', action='A')
+        rule1.action = 'D'
+        rule1.save()
+        self.assertEquals(rule1.rank, 1)
+
 class IPGroupTest(TestCase):
     def test_first_ip_group_is_all(self):
         '''An IP definition matching all should be inserted by default'''
