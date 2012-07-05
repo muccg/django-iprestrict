@@ -67,7 +67,7 @@ class Rule(models.Model):
     url_pattern = models.CharField(max_length=500)
     ip_group = models.ForeignKey(IPGroup, default=1)
     action = models.CharField(max_length=1, choices=ACTION_CHOICES, default='D')
-    rank = models.IntegerField()
+    rank = models.IntegerField(blank=True)
 
     @property
     def regex(self):
@@ -102,6 +102,19 @@ class Rule(models.Model):
         if len(rules_above) == 0:
             return
         self.swap_with_rule(rules_above[0])
+
+    def move_up_url(self):
+        url = '<a href="/iprestrict/move_rule_up/%d">Move Rule Up</a>' % self.pk
+        return url
+    move_up_url.allow_tags = True
+    move_up_url.short_description = 'Move Up'
+
+    def move_down_url(self):
+        url = '<a href="/iprestrict/move_rule_down/%d">Move Rule Down</a>' % self.pk
+        return url
+    move_down_url.allow_tags = True
+    move_down_url.short_description = 'Move Down'
+
 
     def move_down(self):
         rules_below = Rule.objects.filter(rank__gt = self.rank)

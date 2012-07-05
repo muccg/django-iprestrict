@@ -1,5 +1,5 @@
     - CIDR
-    - Move Up/Down Admin Actions for rules
+    - Move Up/Down Admin Actions for rules - URLs in Admin probably too fragile
     - restrict if can't figure out REMOTE_ADDR + HTTP_X_FORWARDED_FOR
     - Make reload of rules possible without restart
     - test views for given URL and IP

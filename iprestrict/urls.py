@@ -3,7 +3,12 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = patterns('iprestrict.views',
+    url(r'^iprestrict/move_rule_up/(?P<rule_id>\d+)[/]?$', 'move_rule_up'),
+    url(r'^iprestrict/move_rule_down/(?P<rule_id>\d+)[/]?$', 'move_rule_down'),
+)
+
+urlpatterns += patterns('',
     url(r'^admin/', include(admin.site.urls)),
 )
 

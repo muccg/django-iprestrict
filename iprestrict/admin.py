@@ -22,7 +22,7 @@ from django.contrib import admin
 class RuleAdmin(admin.ModelAdmin):
     model = models.Rule
 
-    list_display = ('url_pattern', 'ip_group', 'is_allowed')
+    list_display = ('url_pattern', 'ip_group', 'is_allowed', 'move_up_url', 'move_down_url')
 
 
 class IPRangeInline(admin.TabularInline):
