@@ -34,6 +34,7 @@ class IPRange(models.Model):
 
     ip_group = models.ForeignKey(IPGroup)
     first_ip = models.GenericIPAddressField()
+    cidr_prefix_length = models.PositiveSmallIntegerField(null=True, blank=True)
     last_ip = models.GenericIPAddressField(null=True, blank=True)
 
     @property
@@ -42,9 +43,13 @@ class IPRange(models.Model):
 
     @property
     def end(self):
-        if self.last_ip is None:
-            return self.start
-        return ipu.to_number(self.last_ip)
+        if self.last_ip is not None:
+            return ipu.to_number(self.last_ip)
+        if self.cidr_prefix_length is not None:
+            start, end = ipu.cidr_to_range(self.first_ip,
+                                           self.cidr_prefix_length)
+            return end
+        return self.start
 
     @property
     def ip_type(self):

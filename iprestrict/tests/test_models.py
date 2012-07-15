@@ -109,3 +109,14 @@ class IPGroupTest(TestCase):
         #self.assertFalse(ipgroup.matches('::2'))
         #self.assertTrue(ipgroup.matches('::1'))
 
+    def test_ranges_defines_as_subnets(self):
+        ipgroup = models.IPGroup.objects.create(name='Local IPs')
+        iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.0', cidr_prefix_length=30)
+
+        self.assertTrue(ipgroup.matches('192.168.1.0'))
+        self.assertTrue(ipgroup.matches('192.168.1.1'))
+        self.assertTrue(ipgroup.matches('192.168.1.2'))
+        self.assertTrue(ipgroup.matches('192.168.1.3'))
+        self.assertFalse(ipgroup.matches('192.168.0.255'))
+        self.assertFalse(ipgroup.matches('192.168.1.4'))
+
