@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse 
 from django.db import models
 import re
 
@@ -104,14 +105,14 @@ class Rule(models.Model):
         self.swap_with_rule(rules_above[0])
 
     def move_up_url(self):
-        url = '<a href="/iprestrict/move_rule_up/%d">Move Rule Up</a>' % self.pk
-        return url
+        url = reverse('iprestrict.views.move_rule_up', args=[self.pk])
+        return '<a href="%s">Move Up</a>' % url
     move_up_url.allow_tags = True
     move_up_url.short_description = 'Move Up'
 
     def move_down_url(self):
-        url = '<a href="/iprestrict/move_rule_down/%d">Move Rule Down</a>' % self.pk
-        return url
+        url = reverse('iprestrict.views.move_rule_down', args=[self.pk])
+        return '<a href="%s">Move Down</a>' % url
     move_down_url.allow_tags = True
     move_down_url.short_description = 'Move Down'
 
