@@ -39,7 +39,12 @@ class IPRange(models.Model):
 
     @property
     def start(self):
-        return ipu.to_number(self.first_ip)
+        if self.cidr_prefix_length is not None:
+            start, end = ipu.cidr_to_range(self.first_ip,
+                                           self.cidr_prefix_length)
+            return start
+        else:
+            return ipu.to_number(self.first_ip)
 
     @property
     def end(self):
