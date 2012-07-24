@@ -1,5 +1,5 @@
     - add some docs
-    - restrict if can't figure out REMOTE_ADDR + HTTP_X_FORWARDED_FOR
-    - Make reload of rules possible without restart
+    - add support for HTTP_X_FORWARDED_FOR
+    - make custom views @admin only
     - test views for given URL and IP
     - IPv6 support
