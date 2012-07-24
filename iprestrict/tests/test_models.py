@@ -90,6 +90,8 @@ class IPGroupTest(TestCase):
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.1', last_ip='192.168.1.10')
         iprange2 = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.100', last_ip='192.168.1.110')
 
+        ipgroup.load_ranges()
+
         self.assertTrue(ipgroup.matches('192.168.1.1'))
         self.assertTrue(ipgroup.matches('192.168.1.5'))
         self.assertTrue(ipgroup.matches('192.168.1.10'))
@@ -103,6 +105,8 @@ class IPGroupTest(TestCase):
         ipgroup = models.IPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='::1')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='0.0.0.2')
+        ipgroup.load_ranges()
+
         self.assertFalse(ipgroup.matches('0.0.0.1'))
         self.assertTrue(ipgroup.matches('0.0.0.2'))
         # TODO enable when IPv6 conversion to number works
@@ -112,6 +116,8 @@ class IPGroupTest(TestCase):
     def test_ranges_defined_as_subnets(self):
         ipgroup = models.IPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.0', cidr_prefix_length=30)
+
+        ipgroup.load_ranges()
 
         self.assertTrue(ipgroup.matches('192.168.1.0'))
         self.assertTrue(ipgroup.matches('192.168.1.1'))
@@ -123,6 +129,8 @@ class IPGroupTest(TestCase):
     def test_range_first_ip_not_correct(self):
         ipgroup = models.IPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.2', cidr_prefix_length=30)
+
+        ipgroup.load_ranges()
 
         self.assertTrue(ipgroup.matches('192.168.1.0'))
         self.assertTrue(ipgroup.matches('192.168.1.1'))

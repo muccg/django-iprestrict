@@ -26,6 +26,13 @@ class IPRestrictorDefaultRulesTest(TestCase):
         # Restrictor shouldn't read the rules dynamically
         self.assertTrue(restr.is_restricted(SOME_URL, LOCALHOST))
 
+    def test_reload_rules(self):
+        restr = iprestrict.IPRestrictor()
+        models.Rule.objects.create(url_pattern=SOME_URL, action='A', rank=1)
+        restr.reload_rules()
+        self.assertFalse(restr.is_restricted(SOME_URL, LOCALHOST))
+
+
 class IPRestrictorNoRulesTest(TestCase):
     def setUp(self):
         models.Rule.objects.all().delete()
@@ -59,3 +66,12 @@ class IPRestrictorOneUrlAllowedFromOneIpTest(TestCase):
     def test_both_match(self):
         self.assertFalse(self.restrictor.is_restricted(SOME_URL, LOCALHOST))
 
+    def test_reload_if_ipgroup_changed(self):
+        self.assertTrue(self.restrictor.is_restricted(SOME_URL, '10.1.1.1'))
+        localhost = models.IPGroup.objects.get(name='localhost')
+        models.IPRange.objects.create(ip_group=localhost, first_ip='10.1.1.1')
+
+        self.assertTrue(self.restrictor.is_restricted(SOME_URL, '10.1.1.1'))
+        self.restrictor.reload_rules()
+        self.assertFalse(self.restrictor.is_restricted(SOME_URL, '10.1.1.1'))
+        

@@ -11,12 +11,17 @@ class IPGroup(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
 
+    def __init__(self, *args, **kwargs):
+        models.Model.__init__(self, *args, **kwargs)
+        self.load_ranges()
+
+    def load_ranges(self):
+        self._ranges = { 'ipv4': [], 'ipv6': [] }
+        for r in self.iprange_set.all():
+            self._ranges[r.ip_type].append(r)
+
     def ranges(self, ip_type='ipv4'):
-        if not hasattr(self, '_ranges'):
-            self._ranges = { 'ipv4': [], 'ipv6': [] }
-            for r in self.iprange_set.all():
-                self._ranges[r.ip_type].append(r)
-        return self._ranges[ip_type]
+       return self._ranges[ip_type]
 
     def matches(self, ip):
         ip_type = ipu.get_version(ip)
