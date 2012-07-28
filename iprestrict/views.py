@@ -14,5 +14,5 @@ def move_rule_down(request, rule_id):
     return HttpResponseRedirect(reverse('admin:iprestrict_rule_changelist'))
 
 def reload_rules(request):
-    IPRestrictor.get_instance().reload_rules()
+    models.ReloadRulesRequest.request_reload()
     return HttpResponse('ok')

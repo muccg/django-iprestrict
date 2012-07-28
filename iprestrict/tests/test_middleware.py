@@ -8,7 +8,8 @@ class MiddlewareRestrictsTest(TestCase):
     When the middleware is enabled it should restrict all IPs/URLs by default.
     '''
     def setUp(self):
-        restrictor.IPRestrictor.get_instance().reload_rules()
+        models.ReloadRulesRequest.request_reload()
+        #restrictor.IPRestrictor.get_instance().reload_rules()
 
     def assert_url_is_restricted(self, url):
         response = self.client.get(url)

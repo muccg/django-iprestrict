@@ -147,3 +147,12 @@ class Rule(models.Model):
             self.rank = max_rank + 1
         super(Rule, self).save(*args, **kwargs)
 
+
+class ReloadRulesRequest(models.Model):
+    at = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def request_reload(cls):
+        cls.objects.all().delete()
+        cls.objects.create()
+
