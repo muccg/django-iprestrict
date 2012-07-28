@@ -55,9 +55,19 @@
         "pk": 1,
         "model": "iprestrict.rule",
         "fields": {
-            "action": "D",
+            "action": "A",
             "url_pattern": "ALL",
             "rank": 65535,
+            "ip_group": 2
+        }
+    },
+    {
+        "pk": 2,
+        "model": "iprestrict.rule",
+        "fields": {
+            "action": "D",
+            "url_pattern": "ALL",
+            "rank": 65536,
             "ip_group": 1
         }
     }

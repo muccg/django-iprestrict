@@ -13,7 +13,6 @@ class IPRestrictMiddleware(object):
 
     def __init__(self):
         self.restrictor = IPRestrictor.get_instance()
-        #self.restrictor = IPRestrictor()
 
     def process_request(self, request):
         url = request.path_info

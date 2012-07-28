@@ -4,7 +4,6 @@ class IPRestrictor(object):
     def __init__(self):
         self.load_rules()
 
-
     # TODO I don't really like this method of reloading
     # Review
     @classmethod
