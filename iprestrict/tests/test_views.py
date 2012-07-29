@@ -13,6 +13,7 @@ class ReloadViewTest(TestCase):
         admin.is_staff = True
         admin.is_superuser = True
         admin.save()
+        models.ReloadRulesRequest.request_reload()
 
     def add_allow_rule(self):
         localip = models.IPGroup.objects.create(name='Local IP')
