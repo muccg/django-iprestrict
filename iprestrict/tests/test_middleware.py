@@ -61,7 +61,6 @@ class ReloadRulesTest(TestCase):
         create_ip_allow_rule()
 
     def test_reload_with_custom_command(self):
-        # Update 
         from django.core.management import call_command
         call_command('reloadrules', verbosity=0)
 
