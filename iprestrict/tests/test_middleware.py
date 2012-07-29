@@ -3,6 +3,8 @@ from django.test import TestCase
 from iprestrict import models
 from iprestrict import restrictor
 
+from datetime import datetime
+
 class MiddlewareRestrictsTest(TestCase):
     '''
     When the middleware is enabled it should restrict all IPs(but localhost)/URLs by default.
@@ -65,4 +67,4 @@ class ReloadRulesTest(TestCase):
 
         response = self.client.get('', REMOTE_ADDR = LOCAL_IP)
         self.assertEqual(response.status_code, 404)
-   
+

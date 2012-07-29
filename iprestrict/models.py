@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse 
 from django.db import models
+from datetime import datetime
 import re
 
 from iprestrict import ip_utils as ipu
@@ -153,6 +154,19 @@ class ReloadRulesRequest(models.Model):
 
     @classmethod
     def request_reload(cls):
-        cls.objects.all().delete()
-        cls.objects.create()
+        rrs = ReloadRulesRequest.objects.all()
+        if len(rrs) > 0:
+            obj = rrs[0]
+            obj.at = datetime.now()
+            obj.save()
+        else:
+            cls.objects.create() 
+
+    @staticmethod
+    def last_request():
+        result = None
+        rrs = ReloadRulesRequest.objects.all()
+        if len(rrs) > 0:
+            result = rrs[0].at
+        return result
 
