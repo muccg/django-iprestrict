@@ -1,7 +1,12 @@
 from django.test import TestCase
+from django.test.client import RequestFactory
+from django.test.utils import override_settings
+
+from django.core import exceptions
 
 from iprestrict import models
 from iprestrict import restrictor
+from iprestrict.middleware import IPRestrictMiddleware
 
 from datetime import datetime
 
@@ -56,6 +61,15 @@ class MiddlewareAllowsTest(TestCase):
         response = self.client.get('', REMOTE_ADDR = '10.1.1.1')
         self.assertEqual(response.status_code, 403)
 
+    @override_settings(TRUSTED_PROXIES=('1.1.1.1',))
+    def test_middleware_uses_forwarded_for_header(self):
+        response = self.client.get('', REMOTE_ADDR = '1.1.1.1', X_FORWARDED_FOR = LOCAL_IP)
+        self.assertEqual(response.status_code, 404)
+
+    def test_middleware_uses_forwarded_for_header(self):
+        response = self.client.get('', REMOTE_ADDR = '1.1.1.1', X_FORWARDED_FOR = LOCAL_IP)
+        self.assertEqual(response.status_code, 403)
+
 class ReloadRulesTest(TestCase):
     def setUp(self):
         create_ip_allow_rule()
@@ -66,4 +80,50 @@ class ReloadRulesTest(TestCase):
 
         response = self.client.get('', REMOTE_ADDR = LOCAL_IP)
         self.assertEqual(response.status_code, 404)
+
+class MiddlewareExtractClientIpTest(TestCase):
+    Proxy = '1.1.1.1'
+
+    def setUp(self):
+        self.middleware = IPRestrictMiddleware()
+        self.factory = RequestFactory()
+ 
+    def test_remote_addr_only(self):
+        self.middleware = IPRestrictMiddleware()
+        request = self.factory.get('', REMOTE_ADDR=LOCAL_IP)
+
+        client_ip = self.middleware.extract_client_ip(request)
+        self.assertEquals(client_ip, LOCAL_IP)
+
+    @override_settings(TRUSTED_PROXIES=(Proxy,))
+    def test_single_proxy(self):
+        self.middleware = IPRestrictMiddleware()
+        request = self.factory.get('', REMOTE_ADDR=self.Proxy, X_FORWARDED_FOR = LOCAL_IP)
+
+        client_ip = self.middleware.extract_client_ip(request)
+        self.assertEquals(client_ip, LOCAL_IP)
+
+    @override_settings(TRUSTED_PROXIES=(Proxy,'2.2.2.2','4.4.4.4'))
+    def test_multiple_proxies_one_not_trusted(self):
+        self.middleware = IPRestrictMiddleware()
+        proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']
+        request = self.factory.get('', REMOTE_ADDR=self.Proxy, 
+           X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
+        
+        try:
+            client_ip = self.middleware.extract_client_ip(request)
+        except exceptions.PermissionDenied:
+            pass
+        else:
+            self.fail('Should raise PermissionDenied exception')
+
+    @override_settings(TRUSTED_PROXIES=(Proxy,'2.2.2.2','3.3.3.3', '4.4.4.4'))
+    def test_multiple_proxies_all_trusted(self):
+        self.middleware = IPRestrictMiddleware()
+        proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']
+        request = self.factory.get('', REMOTE_ADDR=self.Proxy, 
+           X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
+        
+        client_ip = self.middleware.extract_client_ip(request)
+        self.assertEquals(client_ip, LOCAL_IP)
 

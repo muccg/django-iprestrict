@@ -1,4 +1,3 @@
     - add some docs
-    - add support for HTTP_X_FORWARDED_FOR
     - test views for given URL and IP
     - IPv6 support
