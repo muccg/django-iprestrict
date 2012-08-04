@@ -26,7 +26,7 @@ class IPRestrictMiddleware(object):
 
     def extract_client_ip(self, request):
         client_ip = request.META['REMOTE_ADDR']
-        forwarded_for = request.META.get('X_FORWARDED_FOR')
+        forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
         if forwarded_for is not None:
             forwarded_for = [ip.strip() for ip in forwarded_for.split(',')]
             closest_proxy = client_ip

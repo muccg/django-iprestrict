@@ -63,11 +63,11 @@ class MiddlewareAllowsTest(TestCase):
 
     @override_settings(TRUSTED_PROXIES=('1.1.1.1',))
     def test_middleware_uses_forwarded_for_header(self):
-        response = self.client.get('', REMOTE_ADDR = '1.1.1.1', X_FORWARDED_FOR = LOCAL_IP)
+        response = self.client.get('', REMOTE_ADDR = '1.1.1.1', HTTP_X_FORWARDED_FOR= LOCAL_IP)
         self.assertEqual(response.status_code, 404)
 
     def test_middleware_uses_forwarded_for_header(self):
-        response = self.client.get('', REMOTE_ADDR = '1.1.1.1', X_FORWARDED_FOR = LOCAL_IP)
+        response = self.client.get('', REMOTE_ADDR = '1.1.1.1', HTTP_X_FORWARDED_FOR = LOCAL_IP)
         self.assertEqual(response.status_code, 403)
 
 class ReloadRulesTest(TestCase):
@@ -98,7 +98,7 @@ class MiddlewareExtractClientIpTest(TestCase):
     @override_settings(TRUSTED_PROXIES=(Proxy,))
     def test_single_proxy(self):
         self.middleware = IPRestrictMiddleware()
-        request = self.factory.get('', REMOTE_ADDR=self.Proxy, X_FORWARDED_FOR = LOCAL_IP)
+        request = self.factory.get('', REMOTE_ADDR=self.Proxy, HTTP_X_FORWARDED_FOR = LOCAL_IP)
 
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, LOCAL_IP)
@@ -108,7 +108,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         self.middleware = IPRestrictMiddleware()
         proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']
         request = self.factory.get('', REMOTE_ADDR=self.Proxy, 
-           X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
+           HTTP_X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
         
         try:
             client_ip = self.middleware.extract_client_ip(request)
@@ -122,7 +122,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         self.middleware = IPRestrictMiddleware()
         proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']
         request = self.factory.get('', REMOTE_ADDR=self.Proxy, 
-           X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
+           HTTP_X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
         
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, LOCAL_IP)
