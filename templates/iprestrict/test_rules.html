@@ -1,0 +1,111 @@
+{% load staticfiles %}
+{% load templatetag_handlebars %}
+<!doctype html>
+<html>
+<head>
+    <title>IPRestrict - Test Rules</title>
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/test_rules.css' %}" />
+    <script src="{% static 'javascript/lib/jquery-min.js' %}"></script>
+    <script src="{% static 'javascript/lib/handlebars.js' %}"></script>
+</head>
+
+<body>
+<h2>Test Rules</h2>
+
+<p>Enter a URL and an IP address below, then click Test.</p>
+
+<table>
+    <tr>
+        <th>URL</th>
+        <th>IP Address</th>
+        <th></th>
+        <th></th>
+    <tr>
+
+    <tr>
+        <form>
+            <td>
+                <input type="text" name="url" />
+            </td>
+            <td>
+                <input type="text" name="ip" size='10' />
+            </td>
+            <td>
+                <button>Test</button>
+            </td>
+        </form>
+    </tr>
+
+</table>
+
+<p id="result">
+    <span id='action'></span>
+    <span id='msg'></span>
+</p>
+
+
+<h2>Current Rules</h2>
+<table id='rules'>
+    <thead>
+        <tr>
+            <th>URL pattern</th>
+            <th>IP Group</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody id='rules-body'>
+        <tr>
+            <td colspan="4" align='center'>Rules will be loaded on first test</td>
+        </tr>
+    </tbody>
+
+</table>
+
+
+{% tplhandlebars "rules-template" %}
+    {{#each rules}}
+        {{#if this.matched }}
+            <tr class='ruleMatch'>
+        {{else}}
+            <tr>
+        {{/if}}
+                <td class='{{this.url_pattern.matchStatus}}'>{{this.url_pattern.value}}</td>
+                <td class='{{this.ip_group.matchStatus}}'>
+                    {{this.ip_group.name}}</br>
+                    ({{this.ip_group.ranges}})
+                </td>
+                <td>{{this.action}}</td>
+            </tr>
+    {{/each}}
+{% endtplhandlebars %}
+
+<script>
+     $(document).ready(function(){
+       var template = Handlebars.compile($('#rules-template').html());
+
+       $("button").click(function(event){
+         event.preventDefault();
+         var ip_pattern = /^((([2][5][0-5]|([2][0-4]|[1][0-9]|[0-9])?[0-9])\.){3})([2][5][0-5]|([2][0-4]|[1][0-9]|[0-9])?[0-9])$/;
+         if (! ip_pattern.test($("input[name='ip']").val())) {
+            alert('Invalid IP Address');
+            return;
+         }
+         var data = $('form').serialize();
+         $.getJSON('test_match', data, function(data) {
+            $('#action').html(data.action);
+            $('#action').removeClass();
+            $('#action').addClass(data.action);
+            $('#msg').html(' - ' + data.msg);
+
+            $('#rules-body').empty();
+            $('#rules-body').append(template(data));
+         }); 
+       });
+         
+     });
+</script>
+
+</body>
+</html>

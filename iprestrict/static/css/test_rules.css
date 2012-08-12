@@ -1,0 +1,63 @@
+
+body {
+    padding-left: 10px;
+    color: #333333;
+    font-family: ‘Palatino Linotype’, ‘Book Antiqua’, Palatino, serif;
+    font-size: 18px;
+}
+
+h2 {
+    font-size: 1.7em;
+    padding-left: 20px;
+}
+
+p, table {
+    padding-left: 35px;
+}
+
+input, button {
+    font-size: 110%;
+    padding: 5px;
+}
+
+#result {
+    font-size: 1.2em;
+}
+
+#action.Allowed {
+    color: green;
+}
+
+#action.Denied {
+    color: red;
+}
+
+
+table#rules {
+    width: 75%;
+    border-collapse: collapse;
+    border: 1px solid #333333;
+}
+
+table#rules th {
+    border: 1px solid #333333;
+    padding: 10px;
+    background-color: #333333;
+    color: white;
+}
+
+table#rules td {
+    text-align: center;
+    border: 1px solid #333333;
+    padding: 5px;
+}
+
+tr.ruleMatch {
+    background-color: lightgreen;
+}
+
+td.match {
+    color: green;
+    font-weight: bold;
+}
+
