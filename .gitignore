@@ -1,5 +1,7 @@
 *.pyc
 *.swp
 db.sqlite3
-build
-virt_django-iprestrict
+/build/
+/virt_django-iprestrict/
+/docs/_build/
+
