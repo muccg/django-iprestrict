@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Django IPRestrict
-=================
+Django IP Restrict
+==================
 
 Django IPRestrict is an app + middleware to restrict access to all or sections of a Django project by client IP ranges.
 
