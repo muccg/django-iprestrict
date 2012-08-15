@@ -1,0 +1,2 @@
+django-discover-runner==0.2
+django-templatetag-handlebars==1.2.0
