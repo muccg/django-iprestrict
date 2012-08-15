@@ -31,6 +31,9 @@ class IPGroup(models.Model):
                 return True
         return False
 
+    def ranges_str(self):
+        return ', '.join([str(r) for r in self.ranges()])
+
     def __unicode__(self):
         return self.name
 
@@ -72,6 +75,14 @@ class IPRange(models.Model):
         ip_nr = ipu.to_number(ip)
         return self.start <= ip_nr <= self.end 
 
+    def __unicode__(self):
+        result = str(self.first_ip)
+        if self.cidr_prefix_length is not None:
+            result += '/' + str(self.cidr_prefix_length)
+        elif self.last_ip is not None:
+            result += '-' + str(self.last_ip)
+        return result
+
 class Rule(models.Model):
     class Meta:
         ordering = ['rank', 'id']
@@ -108,6 +119,9 @@ class Rule(models.Model):
         return self.action == 'A'
     is_allowed.boolean = True
     is_allowed.short_description = 'Is allowed?'
+
+    def action_str(self):
+        return 'Allowed' if self.is_allowed() else 'Denied'
 
     def swap_with_rule(self, other):
         other.rank, self.rank = self.rank, other.rank

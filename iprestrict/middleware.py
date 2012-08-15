@@ -6,7 +6,7 @@ from iprestrict import IPRestrictor
 
 from django.conf import settings
 
-logger = log.getLogger()
+logger = log.getLogger(__name__)
 
 class IPRestrictMiddleware(object):
 
