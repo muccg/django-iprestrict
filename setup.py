@@ -23,5 +23,15 @@ setup(
     ],
     packages=[
         'iprestrict',
+        'iprestrict.management',
+        'iprestrict.management.commands',
     ],
+    package_data={
+        'iprestrict': [
+            'templates/iprestrict/*',
+            'static/css/*',
+            'static/javascript/lib/*',
+            'fixtures/*',
+        ]
+    }
 )
