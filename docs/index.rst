@@ -64,6 +64,13 @@ Run ``syncdb`` (or do whatever you do to add new tables to your Database) to add
 
 Enable Django Admin for at least the iprestrict application.
 
+Make sure the the egg template loader is enabled in your setting file::
+
+  TEMPLATE_LOADERS = (
+    ...
+    'django.template.loaders.eggs.Loader',
+  )
+
 Add the urls of iprestrict to your project. Ex in your root urls.py::
 
   from django.conf.urls import patterns, url, include
