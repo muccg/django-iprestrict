@@ -45,6 +45,10 @@ Example for version 0.1::
 
 $ easy_install django_iprestrict_0.1.tar.gz
 
+Install django-templateg-handlebars which is a dependency of Django IPRestrict::
+
+  $ pip install django-templatetag-handlebars
+
 Configuration
 =============
 
@@ -79,7 +83,6 @@ Add ``iprestrict.middleware.IPRestrictMiddleware`` to your ``MIDDLEWARE_CLASSES`
       'iprestrict.middleware.IPRestrictMiddleware',
       ...
   )
-
 
 
 .. toctree::
