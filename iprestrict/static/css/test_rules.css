@@ -61,3 +61,8 @@ td.match {
     font-weight: bold;
 }
 
+td.noMatch {
+    color: red;
+    font-weight: bold;
+}
+
