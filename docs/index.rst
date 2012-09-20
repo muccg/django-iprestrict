@@ -161,7 +161,7 @@ Add ``iprestrict.middleware.IPRestrictMiddleware`` to your ``MIDDLEWARE_CLASSES`
       ...
   )
 
-Your Django project is now restrictred based on the rules defined.
+Your Django project is now restricted based on the rules defined.
 
 
 .. toctree::
