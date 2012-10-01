@@ -34,4 +34,8 @@ setup(
             'fixtures/*',
         ]
     }
+    install_requires=[
+        'South==0.7.3',
+        'django-templatetag-handlebars==1.2.0',
+    ]
 )

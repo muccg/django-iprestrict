@@ -1,4 +1,5 @@
 Django==1.4.1
+South==0.7.3
 django-discover-runner==0.2
 django-templatetag-handlebars==1.2.0
 Sphinx==1.1.3
