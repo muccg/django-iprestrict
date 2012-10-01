@@ -1,3 +1,24 @@
+Requirements and Installation
+=============================
+
+Requirements
+============
+
+Runtime
+-------
+
+* Django 1.4+
+* django-templatetag-handlebars 1.2.0+
+
+Development
+-----------
+
+In addition to Runtime requirements above:
+
+* django-discover-runner (for running the unit tests)
+* sqlite3 (default) or any other RDBMS supported by Django
+* Sphinx (only to generate docs)
+
 Installation
 ============
 
