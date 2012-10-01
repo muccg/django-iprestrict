@@ -4,15 +4,14 @@ Requirements and Installation
 Requirements
 ------------
 
-
 Runtime
--------
+^^^^^^^
 
 * Django 1.4+
 * django-templatetag-handlebars 1.2.0+
 
 Development
------------
+^^^^^^^^^^^
 
 In addition to Runtime requirements above:
 
