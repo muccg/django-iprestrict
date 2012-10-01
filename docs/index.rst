@@ -21,8 +21,6 @@ Table of Contents
     configuration
 
 
-
-
 Configuring the restriction rules
 ---------------------------------
 

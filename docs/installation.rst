@@ -2,7 +2,8 @@ Requirements and Installation
 =============================
 
 Requirements
-============
+------------
+
 
 Runtime
 -------
@@ -20,7 +21,7 @@ In addition to Runtime requirements above:
 * Sphinx (only to generate docs)
 
 Installation
-============
+------------
 
 You can pip install using a link from the downloads page:
 
