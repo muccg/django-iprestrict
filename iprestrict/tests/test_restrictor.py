@@ -34,6 +34,7 @@ class IPRestrictorDefaultRulesTest(TestCase):
 
 
 class IPRestrictorNoRulesTest(TestCase):
+
     def setUp(self):
         models.Rule.objects.all().delete()
         self.restrictor = iprestrict.IPRestrictor()

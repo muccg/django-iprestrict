@@ -32,10 +32,11 @@ setup(
             'static/css/*',
             'static/javascript/lib/*',
             'fixtures/*',
+            'migrations/*',
         ]
     }
     install_requires=[
-        'South==0.7.3',
+        'South==0.7.6',
         'django-templatetag-handlebars==1.2.0',
     ]
 )
