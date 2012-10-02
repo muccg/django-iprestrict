@@ -15,15 +15,14 @@ class RuleTest(TestCase):
         self.assertFalse(rule.is_allowed())
         self.assertTrue(rule.is_restricted())
 
-    def test_url_patterns(self):
-        '''Just testing the url pattern is a regex'''
+    def test_matches_url_pattern_regex(self):
         rule = models.Rule(url_pattern='^/pre/[a-d]+[/]?$')
         self.assertTrue(rule.matches_url('/pre/a/'))
         self.assertTrue(rule.matches_url('/pre/a'))
         self.assertFalse(rule.matches_url('/pre/e/'))
         self.assertFalse(rule.matches_url('/pre/a//'))
 
-    def test_rank_is_automatically_assigned(self):
+    def test_rank_is_automatically_assigned_on_creation(self):
         rule1 = models.Rule.objects.create(url_pattern='1', action='A')
         rule2 = models.Rule.objects.create(url_pattern='2', action='A')
         rule10 = models.Rule.objects.create(url_pattern='10', action='A', rank=10)
@@ -45,7 +44,7 @@ class RuleWithSampleRulesTests(TestCase):
         self.rule1 = models.Rule.objects.create(url_pattern='1', action='A')
         self.rule2 = models.Rule.objects.create(url_pattern='2', action='A')
 
-    def test_default_select_order(self):
+    def test_default_order_is_by_rank(self):
         rules = models.Rule.objects.all()
         self.assertEqual(rules[0].url_pattern, '1')
         self.assertEqual(rules[1].url_pattern, '2')
@@ -85,7 +84,7 @@ class IPGroupTest(TestCase):
         self.assertTrue(all_group.matches('200.200.200.200'))
         self.assertTrue(all_group.matches('1.2.3.4'))
 
-    def test_more_ranges(self):
+    def test_matches_with_ranges(self):
         ipgroup = models.IPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.1', last_ip='192.168.1.10')
         iprange2 = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.100', last_ip='192.168.1.110')
@@ -113,7 +112,7 @@ class IPGroupTest(TestCase):
         #self.assertFalse(ipgroup.matches('::2'))
         #self.assertTrue(ipgroup.matches('::1'))
 
-    def test_ranges_defined_as_subnets(self):
+    def test_matches_with_subnets(self):
         ipgroup = models.IPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.0', cidr_prefix_length=30)
 
@@ -126,9 +125,11 @@ class IPGroupTest(TestCase):
         self.assertFalse(ipgroup.matches('192.168.0.255'))
         self.assertFalse(ipgroup.matches('192.168.1.4'))
 
-    def test_range_first_ip_not_correct(self):
+    def test_matches_subnet_first_ip_not_correct(self):
         ipgroup = models.IPGroup.objects.create(name='Local IPs')
-        iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.2', cidr_prefix_length=30)
+        iprange = models.IPRange.objects.create(ip_group=ipgroup, 
+            first_ip='192.168.1.2', # Should be '192.168.1.1'
+            cidr_prefix_length=30)
 
         ipgroup.load_ranges()
 
