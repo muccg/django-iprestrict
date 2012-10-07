@@ -23,7 +23,7 @@ The disadvantage is that on each request a query will be executed that selects t
 Changing the rules on a production server
 -----------------------------------------
 
-In case you are using the default caching described above, remember that every time you chane your rules you will have to follow them with the ``reload_rules`` command in order for them to come into effect.
+In case you are using the default caching described above, remember that every time you change your rules you will have to follow up with running the ``reload_rules`` command.
 
 However, the recommended way of changing your restriction rules is to make the changes using admin on a staging server and test them there, export them and then import them on the production server instead of changing rules directly on the production server. 
 
