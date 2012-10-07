@@ -13,9 +13,11 @@ class IPRestrictMiddleware(object):
     def __init__(self):
         self.restrictor = IPRestrictor()
         self.trusted_proxies = getattr(settings, 'TRUSTED_PROXIES', tuple())
+        self.dont_reload_rules = getattr(settings, 'DONT_RELOAD_RULES', False)
 
     def process_request(self, request):
-        self.reload_rules_if_needed()
+        if not self.dont_reload_rules:
+            self.reload_rules_if_needed()
 
         url = request.path_info
         client_ip = self.extract_client_ip(request)

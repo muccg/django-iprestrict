@@ -19,6 +19,7 @@ Table of Contents
 
     installation
     configuration
+    changing_and_reloading_rules
 
 
 Indices and tables
