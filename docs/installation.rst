@@ -8,6 +8,7 @@ Runtime
 ^^^^^^^
 
 * Django 1.4+
+* South 0.7.6+
 * django-templatetag-handlebars 1.2.0+
 
 Development
