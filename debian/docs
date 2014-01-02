@@ -1,4 +1,6 @@
 README.md
-requirements.txt
 TODO
-travis-requirements.txt
+docs/changing_and_reloading_rules.rst
+docs/configuration.rst
+docs/index.rst
+docs/installation.rst
