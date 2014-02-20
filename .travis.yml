@@ -8,6 +8,7 @@ env:
 install:
   - pip install -q Django==$DJANGO 
   - pip install -r travis-requirements.txt
+  - pip install coveralls
 script:
   - ./runtests.sh
 after_success:
