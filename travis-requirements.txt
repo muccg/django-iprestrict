@@ -1,3 +1,0 @@
-South
-django-discover-runner
-django-templatetag-handlebars
