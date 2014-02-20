@@ -1,4 +1,5 @@
 from os import path
+import django
 
 # Django settings for mysite project.
 
@@ -174,4 +175,6 @@ LOGGING = {
     }
 }
 
-TEST_RUNNER = 'discover_runner.DiscoverRunner'
+# django < 1.6
+if django.VERSION[1] < 6:
+    TEST_RUNNER = 'discover_runner.DiscoverRunner'
