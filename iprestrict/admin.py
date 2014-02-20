@@ -1,13 +1,17 @@
+# vim:fileencoding=utf-8
+
 from iprestrict import models
 from django.contrib import admin
 from django import forms
 import ip_utils as ipu
+
 
 class RuleAdmin(admin.ModelAdmin):
     model = models.Rule
 
     exclude = ('rank',)
     list_display = ('url_pattern', 'ip_group', 'is_allowed', 'move_up_url', 'move_down_url')
+
 
 class IPRangeForm(forms.ModelForm):
     class Meta:
@@ -49,6 +53,7 @@ class IPRangeForm(forms.ModelForm):
 
         return cleaned_data
 
+
 class IPRangeInline(admin.TabularInline):
     model = models.IPRange
     form = IPRangeForm
@@ -57,9 +62,11 @@ class IPRangeInline(admin.TabularInline):
     readonly_fields = ['ip_type']
     extra = 2
 
+
 class IPGroupAdmin(admin.ModelAdmin):
     model = models.IPGroup
     inlines = [IPRangeInline]
+
 
 admin.site.register(models.Rule, RuleAdmin)
 admin.site.register(models.IPGroup, IPGroupAdmin)

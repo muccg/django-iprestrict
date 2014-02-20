@@ -1,14 +1,19 @@
+# vim:fileencoding=utf-8
+
 from django.core import exceptions
 from django.utils import log
 from iprestrict.models import ReloadRulesRequest
-
 from iprestrict import IPRestrictor
-
 from django.conf import settings
 
 logger = log.getLogger(__name__)
 
+
 class IPRestrictMiddleware(object):
+    restrictor = None
+    trusted_proxies = None
+    allow_proxies = None
+    dont_reload_rules = None
 
     def __init__(self):
         self.restrictor = IPRestrictor()
@@ -38,8 +43,7 @@ class IPRestrictMiddleware(object):
                 proxies = [closest_proxy] + forwarded_for
                 for proxy in proxies:
                     if proxy not in self.trusted_proxies:
-                        logger.info("Client IP %s forwarded by untrusted proxy %s"
-                            % (client_ip, proxy))
+                        logger.info("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
                         raise exceptions.PermissionDenied 
         return client_ip
 
