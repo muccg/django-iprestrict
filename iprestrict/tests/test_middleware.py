@@ -67,7 +67,7 @@ class MiddlewareAllowsTest(TestCase):
         response = self.client.get('', REMOTE_ADDR = '10.1.1.1')
         self.assertEqual(response.status_code, 403)
 
-    @override_settings(TRUSTED_PROXIES=(PROXY,))
+    @override_settings(TRUSTED_PROXIES=(PROXY,), ALLOW_PROXIES=False)
     def test_middleware_allows_if_proxy_is_trusted(self):
         response = self.client.get('', REMOTE_ADDR = PROXY, HTTP_X_FORWARDED_FOR= LOCAL_IP)
         self.assertEqual(response.status_code, 404)
@@ -99,7 +99,14 @@ class MiddlewareExtractClientIpTest(TestCase):
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, LOCAL_IP)
 
-    @override_settings(TRUSTED_PROXIES=(PROXY,))
+    def test_remote_addr_empty(self):
+        self.middleware = IPRestrictMiddleware()
+        request = self.factory.get('', REMOTE_ADDR='', HTTP_X_FORWARDED_FOR = LOCAL_IP)
+
+        client_ip = self.middleware.extract_client_ip(request)
+        self.assertEquals(client_ip, LOCAL_IP)
+
+    @override_settings(TRUSTED_PROXIES=(PROXY,), ALLOW_PROXIES=False)
     def test_single_proxy(self):
         self.middleware = IPRestrictMiddleware()
         request = self.factory.get('', REMOTE_ADDR=PROXY, HTTP_X_FORWARDED_FOR = LOCAL_IP)
@@ -107,7 +114,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, LOCAL_IP)
 
-    @override_settings(TRUSTED_PROXIES=(PROXY,'2.2.2.2','4.4.4.4'))
+    @override_settings(TRUSTED_PROXIES=(PROXY,'2.2.2.2','4.4.4.4'), ALLOW_PROXIES=False)
     def test_multiple_proxies_one_not_trusted(self):
         self.middleware = IPRestrictMiddleware()
         proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']
@@ -121,7 +128,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         else:
             self.fail('Should raise PermissionDenied exception')
 
-    @override_settings(TRUSTED_PROXIES=(PROXY,'2.2.2.2','3.3.3.3', '4.4.4.4'))
+    @override_settings(TRUSTED_PROXIES=(PROXY,'2.2.2.2','3.3.3.3', '4.4.4.4'), ALLOW_PROXIES=False)
     def test_multiple_proxies_all_trusted(self):
         self.middleware = IPRestrictMiddleware()
         proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']

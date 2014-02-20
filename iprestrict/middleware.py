@@ -14,6 +14,7 @@ class IPRestrictMiddleware(object):
         self.restrictor = IPRestrictor()
         self.trusted_proxies = getattr(settings, 'TRUSTED_PROXIES', tuple())
         self.dont_reload_rules = getattr(settings, 'DONT_RELOAD_RULES', False)
+        self.allow_proxies = getattr(settings, 'ALLOW_PROXIES', True)
 
     def process_request(self, request):
         if not self.dont_reload_rules:
@@ -29,17 +30,20 @@ class IPRestrictMiddleware(object):
     def extract_client_ip(self, request):
         client_ip = request.META['REMOTE_ADDR']
         forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if forwarded_for is not None:
-            forwarded_for = [ip.strip() for ip in forwarded_for.split(',')]
-            closest_proxy = client_ip
-            client_ip = forwarded_for.pop(0)
-            proxies = [closest_proxy] + forwarded_for
-            for proxy in proxies:
-                if proxy not in self.trusted_proxies:
-                    logger.info("Client IP %s forwarded by untrusted proxy %s"
-                        % (client_ip, proxy))
-                    raise exceptions.PermissionDenied 
- 
+        if self.allow_proxies:
+            if not client_ip.strip():
+                client_ip = forwarded_for.split(',')[0].strip()
+        else:
+            if forwarded_for is not None:
+                forwarded_for = [ip.strip() for ip in forwarded_for.split(',')]
+                closest_proxy = client_ip
+                client_ip = forwarded_for.pop(0)
+                proxies = [closest_proxy] + forwarded_for
+                for proxy in proxies:
+                    if proxy not in self.trusted_proxies:
+                        logger.info("Client IP %s forwarded by untrusted proxy %s"
+                            % (client_ip, proxy))
+                        raise exceptions.PermissionDenied 
         return client_ip
 
     def reload_rules_if_needed(self):
