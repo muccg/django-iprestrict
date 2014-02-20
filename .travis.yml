@@ -7,9 +7,8 @@ env:
   - DJANGO=1.6 DB=sqlite
 install:
   - pip install -q Django==$DJANGO 
-  - pip install -r travis-requirements.txt
-  - pip install coveralls
+  - pip install coveralls coverage
 script:
-  - ./runtests.sh
+  - coverage run --rcfile=.coverage.rc setup.py test
 after_success:
   - coveralls
