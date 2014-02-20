@@ -101,10 +101,10 @@ class MiddlewareExtractClientIpTest(TestCase):
 
     def test_remote_addr_empty(self):
         self.middleware = IPRestrictMiddleware()
-        request = self.factory.get('', REMOTE_ADDR='', HTTP_X_FORWARDED_FOR = LOCAL_IP)
+        request = self.factory.get('', REMOTE_ADDR='')
 
         client_ip = self.middleware.extract_client_ip(request)
-        self.assertEquals(client_ip, LOCAL_IP)
+        self.assertEquals(client_ip, '')
 
     @override_settings(TRUSTED_PROXIES=(PROXY,), ALLOW_PROXIES=False)
     def test_single_proxy(self):
