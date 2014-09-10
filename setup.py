@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='django-iprestrict',
-    version='0.2',
+    version='0.3',
     description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     long_description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     author='Tamas Szabo',
