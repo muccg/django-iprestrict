@@ -36,7 +36,7 @@ setup(
         ]
     },
     install_requires=[
-        'South==0.7.6',
+        'South>=1.0.0',
         'django-templatetag-handlebars==1.2.0',
     ]
 )
