@@ -5,7 +5,7 @@ from iprestrict.restrictor import IPRestrictor
 from iprestrict.decorators import superuser_required
 from django.shortcuts import render_to_response
 
-from django.utils import simplejson as json
+import json
 
 @superuser_required
 def move_rule_up(request, rule_id):
