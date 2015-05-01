@@ -40,14 +40,14 @@ def test_match(request):
         result = {
             'action': 'Allowed',
             'msg': 'No rules matched.',
-        } 
+        }
     else:
         result = {
             'action': action,
             'msg': 'URL matched Rule highlighted below.'
-        } 
+        }
     result['rules'] = rules
-    
+
     return HttpResponse(json.dumps(result))
 
 def find_matching_rule(url, ip):
@@ -58,7 +58,7 @@ def find_matching_rule(url, ip):
 
 def list_rules(matching_rule_id, url, ip):
     return [map_rule(r, matching_rule_id, url, ip) for r in models.Rule.objects.all()]
-        
+
 def map_rule(r, matching_rule_id, url, ip):
     rule = {
         'url_pattern': {
@@ -75,4 +75,3 @@ def map_rule(r, matching_rule_id, url, ip):
     if r.pk == matching_rule_id:
         rule['matched'] = True
     return rule
-
