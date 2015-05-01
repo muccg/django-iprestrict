@@ -12,6 +12,7 @@ class RuleAdmin(admin.ModelAdmin):
 class IPRangeForm(forms.ModelForm):
     class Meta:
         model = models.IPRange
+        exclude = ()
 
     def clean_cidr_prefix_length(self):
         cidr = self.cleaned_data['cidr_prefix_length']
