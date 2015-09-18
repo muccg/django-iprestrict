@@ -7,7 +7,7 @@ except ImportError:
 
 setup(
     name='django-iprestrict',
-    version='0.3.1.2',
+    version='0.3.1.3',
     description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     long_description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     author='Tamas Szabo',
@@ -36,7 +36,6 @@ setup(
         ]
     },
     install_requires=[
-        'South>=1.0.0',
         'django-templatetag-handlebars==1.2.0',
     ]
 )
