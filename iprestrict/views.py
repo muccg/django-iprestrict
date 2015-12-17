@@ -83,4 +83,3 @@ def map_rule(r, matching_rule_id, url, ip):
     if r.pk == matching_rule_id:
         rule['matched'] = True
     return rule
-
