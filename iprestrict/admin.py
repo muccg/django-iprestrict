@@ -16,13 +16,14 @@ class RuleAdmin(admin.ModelAdmin):
 class IPRangeForm(forms.ModelForm):
     class Meta:
         model = models.IPRange
+        fields = '__all__'
 
     def clean_cidr_prefix_length(self):
         cidr = self.cleaned_data['cidr_prefix_length']
         if cidr:
             if not (1 <= cidr <= 31):
                 raise forms.ValidationError("Must be a number between 1 and 31")
-                
+
         return cidr
 
     def clean(self):
@@ -43,7 +44,7 @@ class IPRangeForm(forms.ModelForm):
                 # Ignore rest of validation for ipv6, support isn't there yet
                 if ipu.to_number(first_ip) > ipu.to_number(last_ip):
                     raise forms.ValidationError("Last IP should be greater than First IP")
- 
+
         if cidr:
             # With CIDR the starting address could be different than the one
             # the user specified. Making sure it is set to the first ip in the
