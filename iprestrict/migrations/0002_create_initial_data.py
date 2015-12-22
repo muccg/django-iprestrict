@@ -12,25 +12,25 @@ class Migration(DataMigration):
             name='ALL', description="Matches all IP Addresses")
         localhost_group = orm.IPGroup.objects.create(
             name='localhost', description="IP Address of localhost")
-      
-        # IP ranges defining ALL and localhost for ipv4 and ipv6  
+
+        # IP ranges defining ALL and localhost for ipv4 and ipv6
         orm.IPRange.objects.create(ip_group=all_group,
             first_ip = '0.0.0.0', last_ip = '255.255.255.255')
         orm.IPRange.objects.create(ip_group=all_group,
-            first_ip = '0:0:0:0:0:0:0:0', 
+            first_ip = '0:0:0:0:0:0:0:0',
             last_ip = 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff')
 
         orm.IPRange.objects.create(ip_group=localhost_group,
             first_ip = '127.0.0.1')
         orm.IPRange.objects.create(ip_group=all_group,
-            first_ip = '::1') 
+            first_ip = '::1')
 
         # Default rules: Allow all for localhost and Deny everything else
 
         orm.Rule.objects.create(ip_group=localhost_group,
-            action = 'A', url_pattern = 'ALL', rank=65535) 
+            action = 'A', url_pattern = 'ALL', rank=65535)
         orm.Rule.objects.create(ip_group=all_group,
-            action = 'D', url_pattern = 'ALL', rank=65536) 
+            action = 'A', url_pattern = 'ALL', rank=65536)
 
 
     def backwards(self, orm):
