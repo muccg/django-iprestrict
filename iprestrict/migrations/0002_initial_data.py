@@ -34,7 +34,7 @@ def populate_data(apps, schema_editor):
     Rule = apps.get_model('iprestrict', 'Rule')
     Rule.objects.create(
         ip_group=first_group,
-        action='D',
+        action='A',
         url_pattern='ALL',
         rank=65536)
     Rule.objects.create(
