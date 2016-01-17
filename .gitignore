@@ -7,4 +7,5 @@ db.sqlite3
 /docs/_build/
 *.egg-info
 *.egg
-dist/
+MANIFEST
+/dist/
