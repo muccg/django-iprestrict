@@ -1,0 +1,18 @@
+Source: python-django-iprestrict
+Section: web
+Priority: extra
+Maintainer: Rodney Lorrimar <rlorrimar@ccg.murdoch.edu.au>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.4
+Homepage: http://django-iprestrict.readthedocs.org/en/latest/
+Vcs-Git: https://github.com/muccg/django-iprestrict.git
+Vcs-Browser: https://github.com/muccg/django-iprestrict
+
+Package: python-django-iprestrict
+Architecture: any
+Depends: ${misc:Depends},
+         ${python:Depends},
+         python-django
+Description: Restricts access to a Django application by client IP ranges.
+ Django IPRestrict is an app + middleware to restrict access to all or
+ sections of a Django project by client IP ranges.

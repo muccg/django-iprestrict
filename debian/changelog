@@ -1,0 +1,11 @@
+python-django-iprestrict (0.4.0) unstable; urgency=medium
+
+  * New release.
+
+ -- Rodney Lorrimar <rlorrimar@ccg.murdoch.edu.au>  Sun, 17 Jan 2016 12:33:21 +0000
+
+python-django-iprestrict (0.1) ccg; urgency=low
+
+  * Initial Release.
+
+ -- Rodney Lorrimar <rlorrimar@ccg.murdoch.edu.au>  Thu, 02 Jan 2014 09:42:14 +0800
