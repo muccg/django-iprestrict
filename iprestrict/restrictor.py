@@ -1,7 +1,12 @@
+# vim:fileencoding=utf-8
 from iprestrict import models
 from datetime import datetime
 
+
 class IPRestrictor(object):
+    rules = None
+    last_reload = None
+
     def __init__(self):
         self.load_rules()
 

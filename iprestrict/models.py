@@ -1,9 +1,11 @@
-from django.core.urlresolvers import reverse 
+# vim:fileencoding=utf-8
+
+from django.core.urlresolvers import reverse
 from django.db import models
 from datetime import datetime
 import re
-
 from iprestrict import ip_utils as ipu
+
 
 class IPGroup(models.Model):
     class Meta:
@@ -17,12 +19,12 @@ class IPGroup(models.Model):
         self.load_ranges()
 
     def load_ranges(self):
-        self._ranges = { 'ipv4': [], 'ipv6': [] }
+        self._ranges = {'ipv4': [], 'ipv6': []}
         for r in self.iprange_set.all():
             self._ranges[r.ip_type].append(r)
 
     def ranges(self, ip_type='ipv4'):
-       return self._ranges[ip_type]
+        return self._ranges[ip_type]
 
     def matches(self, ip):
         ip_type = ipu.get_version(ip)
@@ -36,6 +38,7 @@ class IPGroup(models.Model):
 
     def __unicode__(self):
         return self.name
+
 
 class IPRange(models.Model):
     class Meta:
@@ -83,6 +86,7 @@ class IPRange(models.Model):
             result += '-' + str(self.last_ip)
         return result
 
+
 class Rule(models.Model):
     class Meta:
         ordering = ['rank', 'id']
@@ -107,7 +111,7 @@ class Rule(models.Model):
         if self.url_pattern == 'ALL':
             return True
         else:
-            return (self.regex.match(url) is not None)
+            return self.regex.match(url) is not None
 
     def matches_ip(self, ip):
         return self.ip_group.matches(ip)
@@ -129,7 +133,7 @@ class Rule(models.Model):
         self.save()
 
     def move_up(self):
-        rules_above = Rule.objects.filter(rank__lt = self.rank).order_by('-rank')
+        rules_above = Rule.objects.filter(rank__lt=self.rank).order_by('-rank')
         if len(rules_above) == 0:
             return
         self.swap_with_rule(rules_above[0])
@@ -146,16 +150,15 @@ class Rule(models.Model):
     move_down_url.allow_tags = True
     move_down_url.short_description = 'Move Down'
 
-
     def move_down(self):
-        rules_below = Rule.objects.filter(rank__gt = self.rank)
+        rules_below = Rule.objects.filter(rank__gt=self.rank)
         if len(rules_below) == 0:
             return
         self.swap_with_rule(rules_below[0])
 
     def save(self, *args, **kwargs):
         if self.rank is None:
-            max_aggr = Rule.objects.filter(rank__lt = 65000).aggregate(models.Max('rank'))
+            max_aggr = Rule.objects.filter(rank__lt=65000).aggregate(models.Max('rank'))
             max_rank = max_aggr.get('rank__max')
             if max_rank is None:
                 max_rank = 0

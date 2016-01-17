@@ -1,7 +1,10 @@
+# vim:fileencoding=utf-8
+
 from iprestrict import models
 from django.contrib import admin
 from django import forms
 import ip_utils as ipu
+
 
 class RuleAdmin(admin.ModelAdmin):
     model = models.Rule
@@ -9,16 +12,18 @@ class RuleAdmin(admin.ModelAdmin):
     exclude = ('rank',)
     list_display = ('url_pattern', 'ip_group', 'is_allowed', 'move_up_url', 'move_down_url')
 
+
 class IPRangeForm(forms.ModelForm):
     class Meta:
         model = models.IPRange
+        fields = '__all__'
 
     def clean_cidr_prefix_length(self):
         cidr = self.cleaned_data['cidr_prefix_length']
         if cidr:
             if not (1 <= cidr <= 31):
                 raise forms.ValidationError("Must be a number between 1 and 31")
-                
+
         return cidr
 
     def clean(self):
@@ -39,7 +44,7 @@ class IPRangeForm(forms.ModelForm):
                 # Ignore rest of validation for ipv6, support isn't there yet
                 if ipu.to_number(first_ip) > ipu.to_number(last_ip):
                     raise forms.ValidationError("Last IP should be greater than First IP")
- 
+
         if cidr:
             # With CIDR the starting address could be different than the one
             # the user specified. Making sure it is set to the first ip in the
@@ -49,6 +54,7 @@ class IPRangeForm(forms.ModelForm):
 
         return cleaned_data
 
+
 class IPRangeInline(admin.TabularInline):
     model = models.IPRange
     form = IPRangeForm
@@ -57,9 +63,11 @@ class IPRangeInline(admin.TabularInline):
     readonly_fields = ['ip_type']
     extra = 2
 
+
 class IPGroupAdmin(admin.ModelAdmin):
     model = models.IPGroup
     inlines = [IPRangeInline]
+
 
 admin.site.register(models.Rule, RuleAdmin)
 admin.site.register(models.IPGroup, IPGroupAdmin)

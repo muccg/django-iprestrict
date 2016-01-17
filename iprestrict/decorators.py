@@ -1,3 +1,5 @@
+# vim:fileencoding=utf-8
+
 from functools import wraps
 from django.utils.translation import ugettext as _
 from django.contrib.admin.forms import AdminAuthenticationForm
@@ -7,6 +9,7 @@ from django.http import HttpResponseForbidden
 
 # Copied from django staff_member_required
 # Why isn't this provided by Django?
+
 
 def superuser_required(view_func):
     """

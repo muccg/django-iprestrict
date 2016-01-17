@@ -1,11 +1,12 @@
+# vim:fileencoding=utf-8
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from iprestrict import models
-from iprestrict.restrictor import IPRestrictor
-from iprestrict.decorators import superuser_required
 from django.shortcuts import render_to_response
-
 import json
+
+from iprestrict import models
+from iprestrict.decorators import superuser_required
+
 
 @superuser_required
 def move_rule_up(request, rule_id):
@@ -13,20 +14,24 @@ def move_rule_up(request, rule_id):
     rule.move_up()
     return HttpResponseRedirect(reverse('admin:iprestrict_rule_changelist'))
 
+
 @superuser_required
 def move_rule_down(request, rule_id):
     rule = models.Rule.objects.get(pk=rule_id)
     rule.move_down()
     return HttpResponseRedirect(reverse('admin:iprestrict_rule_changelist'))
 
+
 @superuser_required
 def reload_rules(request):
     models.ReloadRulesRequest.request_reload()
     return HttpResponse('ok')
 
+
 @superuser_required
 def test_rules_page(request):
     return render_to_response('iprestrict/test_rules.html')
+
 
 @superuser_required
 def test_match(request):
@@ -50,14 +55,17 @@ def test_match(request):
 
     return HttpResponse(json.dumps(result))
 
+
 def find_matching_rule(url, ip):
     for r in models.Rule.objects.all():
         if r.matches_url(url) and r.matches_ip(ip):
-            return (r.pk, r.action_str())
-    return (None, None)
+            return r.pk, r.action_str()
+    return None, None
+
 
 def list_rules(matching_rule_id, url, ip):
     return [map_rule(r, matching_rule_id, url, ip) for r in models.Rule.objects.all()]
+
 
 def map_rule(r, matching_rule_id, url, ip):
     rule = {
@@ -66,7 +74,7 @@ def map_rule(r, matching_rule_id, url, ip):
             'matchStatus': 'match' if r.matches_url(url) else 'noMatch'
         },
         'ip_group': {
-            'name':  r.ip_group.name,
+            'name': r.ip_group.name,
             'ranges': r.ip_group.ranges_str(),
             'matchStatus': 'match' if r.matches_ip(ip) else 'noMatch'
         },
