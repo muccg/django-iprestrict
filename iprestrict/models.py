@@ -34,8 +34,10 @@ class IPGroup(models.Model):
     def ranges_str(self):
         return ', '.join([str(r) for r in self.ranges()])
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
+
+    __unicode__ = __str__
 
 
 class IPRange(models.Model):
@@ -76,13 +78,15 @@ class IPRange(models.Model):
         ip_nr = ipu.to_number(ip)
         return self.start <= ip_nr <= self.end
 
-    def __unicode__(self):
+    def __str__(self):
         result = str(self.first_ip)
         if self.cidr_prefix_length is not None:
             result += '/' + str(self.cidr_prefix_length)
         elif self.last_ip is not None:
             result += '-' + str(self.last_ip)
         return result
+
+    __unicode__ = __str__
 
 
 class Rule(models.Model):
