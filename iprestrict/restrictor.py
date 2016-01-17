@@ -1,5 +1,4 @@
 from datetime import datetime
-from . import models
 
 
 class IPRestrictor(object):
@@ -17,7 +16,8 @@ class IPRestrictor(object):
 
     def load_rules(self):
         # We are caching the rules, to avoid DB lookup on each request
-        self.rules = [r for r in models.Rule.objects.all()]
+        from .models import Rule
+        self.rules = list(Rule.objects.all())
         self.last_reload = datetime.now()
 
     reload_rules = load_rules
