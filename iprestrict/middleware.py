@@ -1,10 +1,10 @@
 from django.core import exceptions
-from django.utils import log
 from django.conf import settings
+import logging
 from .models import ReloadRulesRequest
 from .restrictor import IPRestrictor
 
-logger = log.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class IPRestrictMiddleware(object):
