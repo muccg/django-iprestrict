@@ -16,7 +16,7 @@ class RuleAdmin(admin.ModelAdmin):
 class IPRangeForm(forms.ModelForm):
     class Meta:
         model = models.IPRange
-        fields = '__all__'
+        exclude = ()
 
     def clean_cidr_prefix_length(self):
         cidr = self.cleaned_data['cidr_prefix_length']
@@ -71,4 +71,3 @@ class IPGroupAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Rule, RuleAdmin)
 admin.site.register(models.IPGroup, IPGroupAdmin)
-
