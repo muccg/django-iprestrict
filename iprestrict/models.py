@@ -1,8 +1,8 @@
+import re
 from django.core.urlresolvers import reverse
 from django.db import models
 from datetime import datetime
-import re
-from iprestrict import ip_utils as ipu
+from . import ip_utils as ipu
 
 
 class IPGroup(models.Model):

@@ -1,8 +1,8 @@
 from django.core import exceptions
 from django.utils import log
-from iprestrict.models import ReloadRulesRequest
-from iprestrict import IPRestrictor
 from django.conf import settings
+from .models import ReloadRulesRequest
+from .restrictor import IPRestrictor
 
 logger = log.getLogger(__name__)
 

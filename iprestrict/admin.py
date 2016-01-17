@@ -1,7 +1,7 @@
-from iprestrict import models
 from django.contrib import admin
 from django import forms
-import ip_utils as ipu
+from . import ip_utils as ipu
+from . import models
 
 
 class RuleAdmin(admin.ModelAdmin):

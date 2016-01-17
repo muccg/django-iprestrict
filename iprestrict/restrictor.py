@@ -1,5 +1,5 @@
-from iprestrict import models
 from datetime import datetime
+from . import models
 
 
 class IPRestrictor(object):

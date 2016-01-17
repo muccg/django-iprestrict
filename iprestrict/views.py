@@ -3,8 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 import json
 
-from iprestrict import models
-from iprestrict.decorators import superuser_required
+from . import models
+from .decorators import superuser_required
 
 
 @superuser_required
