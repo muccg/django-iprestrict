@@ -4,16 +4,14 @@ Configuration
 Setting up the app
 ------------------
 
-Add ``iprestrict``, ``south`` (if you aren't using south already) and ``templatetag_handlebars`` to ``INSTALLED_APPS`` in your settings file::
+Add ``iprestrict``, and ``templatetag_handlebars`` to
+``INSTALLED_APPS`` in your settings file::
 
   INSTALLED_APPS = (
     ...
-    'south',
     'templatetag_handlebars',
     'iprestrict',
   )
-
-In case you didn't had South installed already run ``syncdb`` to create South's database schema.
 
 Run the migrations for the ``iprestrict`` application::
 
