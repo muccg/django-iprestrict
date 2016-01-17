@@ -1,10 +1,8 @@
-#!/usr/bin/env python
-
 from setuptools import setup
 
 setup(
     name='django-iprestrict',
-    version='0.3.2',
+    version='0.4.0',
     description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     long_description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     author='Tamas Szabo, CCG, Murdoch University',
@@ -14,7 +12,6 @@ setup(
     classifiers=[
         "Framework :: Django",
         "Intended Audience :: Developers",
-        "Intended Audience :: System Administrators",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Topic :: Software Development"
@@ -25,7 +22,10 @@ setup(
         'iprestrict.management.commands',
     ],
     include_package_data=True,
+    zip_safe=False,
     install_requires=[
-        'django-templatetag-handlebars==1.2.0',
-    ]
+        'Django>=1.7',
+        'django-templatetag-handlebars==1.3.2.dev1',
+    ],
+    test_suite='tests.runtests.main',
 )

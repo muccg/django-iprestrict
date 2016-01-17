@@ -8,6 +8,7 @@ from django.http import HttpResponseForbidden
 # Copied from django staff_member_required
 # Why isn't this provided by Django?
 
+
 def superuser_required(view_func):
     """
     Decorator for views that checks that the user is logged in and is a staff
@@ -34,4 +35,3 @@ def superuser_required(view_func):
         }
         return login(request, **defaults)
     return _checklogin
-

@@ -1,3 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
-PYTHONPATH=. django-admin.py test --settings=iprestrict.test_settings iprestrict
+export PYTHONPATH=.
+exec django-admin.py test --settings=tests.test_settings tests

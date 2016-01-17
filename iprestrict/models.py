@@ -1,9 +1,9 @@
-from django.core.urlresolvers import reverse 
+import re
+from django.core.urlresolvers import reverse
 from django.db import models
 from datetime import datetime
-import re
+from . import ip_utils as ipu
 
-from iprestrict import ip_utils as ipu
 
 class IPGroup(models.Model):
     class Meta:
@@ -17,12 +17,12 @@ class IPGroup(models.Model):
         self.load_ranges()
 
     def load_ranges(self):
-        self._ranges = { 'ipv4': [], 'ipv6': [] }
+        self._ranges = {'ipv4': [], 'ipv6': []}
         for r in self.iprange_set.all():
             self._ranges[r.ip_type].append(r)
 
     def ranges(self, ip_type='ipv4'):
-       return self._ranges[ip_type]
+        return self._ranges[ip_type]
 
     def matches(self, ip):
         ip_type = ipu.get_version(ip)
@@ -34,8 +34,11 @@ class IPGroup(models.Model):
     def ranges_str(self):
         return ', '.join([str(r) for r in self.ranges()])
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
+
+    __unicode__ = __str__
+
 
 class IPRange(models.Model):
     class Meta:
@@ -67,21 +70,24 @@ class IPRange(models.Model):
 
     @property
     def ip_type(self):
-        if not self.first_ip: 
+        if not self.first_ip:
             return ''
         return ipu.get_version(self.first_ip)
 
     def __contains__(self, ip):
         ip_nr = ipu.to_number(ip)
-        return self.start <= ip_nr <= self.end 
+        return self.start <= ip_nr <= self.end
 
-    def __unicode__(self):
+    def __str__(self):
         result = str(self.first_ip)
         if self.cidr_prefix_length is not None:
             result += '/' + str(self.cidr_prefix_length)
         elif self.last_ip is not None:
             result += '-' + str(self.last_ip)
         return result
+
+    __unicode__ = __str__
+
 
 class Rule(models.Model):
     class Meta:
@@ -107,7 +113,7 @@ class Rule(models.Model):
         if self.url_pattern == 'ALL':
             return True
         else:
-            return (self.regex.match(url) is not None)
+            return self.regex.match(url) is not None
 
     def matches_ip(self, ip):
         return self.ip_group.matches(ip)
@@ -129,7 +135,7 @@ class Rule(models.Model):
         self.save()
 
     def move_up(self):
-        rules_above = Rule.objects.filter(rank__lt = self.rank).order_by('-rank')
+        rules_above = Rule.objects.filter(rank__lt=self.rank).order_by('-rank')
         if len(rules_above) == 0:
             return
         self.swap_with_rule(rules_above[0])
@@ -146,16 +152,15 @@ class Rule(models.Model):
     move_down_url.allow_tags = True
     move_down_url.short_description = 'Move Down'
 
-
     def move_down(self):
-        rules_below = Rule.objects.filter(rank__gt = self.rank)
+        rules_below = Rule.objects.filter(rank__gt=self.rank)
         if len(rules_below) == 0:
             return
         self.swap_with_rule(rules_below[0])
 
     def save(self, *args, **kwargs):
         if self.rank is None:
-            max_aggr = Rule.objects.filter(rank__lt = 65000).aggregate(models.Max('rank'))
+            max_aggr = Rule.objects.filter(rank__lt=65000).aggregate(models.Max('rank'))
             max_rank = max_aggr.get('rank__max')
             if max_rank is None:
                 max_rank = 0
@@ -174,7 +179,7 @@ class ReloadRulesRequest(models.Model):
             obj.at = datetime.now()
             obj.save()
         else:
-            cls.objects.create() 
+            cls.objects.create()
 
     @staticmethod
     def last_request():
@@ -183,4 +188,3 @@ class ReloadRulesRequest(models.Model):
         if len(rrs) > 0:
             result = rrs[0].at
         return result
-
