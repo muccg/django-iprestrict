@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-try:
-    from setuptools.core import setup
-except ImportError:
-    from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='django-iprestrict',
@@ -13,7 +10,7 @@ setup(
     author='Tamas Szabo, CCG, Murdoch University',
     author_email='devops@ccg.murdoch.edu.au',
     url='https://github.com/muccg/django-iprestrict',
-    download_url='https://bitbucket.org/ccgmurdoch/ccg-django-extras/downloads/',
+    download_url='https://github.com/muccg/django-iprestrict/releases',
     classifiers=[
         "Framework :: Django",
         "Intended Audience :: Developers",
@@ -27,15 +24,7 @@ setup(
         'iprestrict.management',
         'iprestrict.management.commands',
     ],
-    package_data={
-        'iprestrict': [
-            'templates/iprestrict/*',
-            'static/css/*',
-            'static/javascript/lib/*',
-            'fixtures/*',
-            'migrations/*',
-        ]
-    },
+    include_package_data=True,
     install_requires=[
         'South>=1.0.0',
         'django-templatetag-handlebars==1.2.0',
