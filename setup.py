@@ -7,10 +7,11 @@ except ImportError:
 
 setup(
     name='django-iprestrict',
-    version='0.3.1',
+    version='0.3.2',
     description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     long_description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
-    author='Tamas Szabo',
+    author='Tamas Szabo, CCG, Murdoch University',
+    author_email='devops@ccg.murdoch.edu.au',
     url='https://github.com/muccg/django-iprestrict',
     download_url='https://bitbucket.org/ccgmurdoch/ccg-django-extras/downloads/',
     classifiers=[
