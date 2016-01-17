@@ -1,12 +1,12 @@
 from django.test import TestCase
-from django.utils import unittest
 
 import iprestrict
 from iprestrict import models
 
 IP = '10.1.1.1'
 SOME_URL = '/some/url'
-        
+
+
 class IPRestrictorDefaultRulesTest(TestCase):
 
     def test_restrictor_restricts_all_by_default(self):
@@ -76,4 +76,3 @@ class IPRestrictorOneUrlAllowedFromOneIpTest(TestCase):
         self.assertTrue(self.restrictor.is_restricted(SOME_URL, '10.10.10.10'))
         self.restrictor.reload_rules()
         self.assertFalse(self.restrictor.is_restricted(SOME_URL, '10.10.10.10'))
-        

@@ -1,9 +1,8 @@
 from django.test import TestCase
-from django.utils.unittest import skip
 from django.contrib.auth.models import User
 
 from iprestrict import models
-from iprestrict import restrictor
+
 
 class ReloadViewTest(TestCase):
     IP = '192.168.1.1'
