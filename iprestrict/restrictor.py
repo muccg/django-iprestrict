@@ -1,4 +1,3 @@
-# vim:fileencoding=utf-8
 from iprestrict import models
 from datetime import datetime
 

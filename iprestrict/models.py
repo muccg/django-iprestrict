@@ -1,5 +1,3 @@
-# vim:fileencoding=utf-8
-
 from django.core.urlresolvers import reverse
 from django.db import models
 from datetime import datetime
@@ -70,13 +68,13 @@ class IPRange(models.Model):
 
     @property
     def ip_type(self):
-        if not self.first_ip: 
+        if not self.first_ip:
             return ''
         return ipu.get_version(self.first_ip)
 
     def __contains__(self, ip):
         ip_nr = ipu.to_number(ip)
-        return self.start <= ip_nr <= self.end 
+        return self.start <= ip_nr <= self.end
 
     def __unicode__(self):
         result = str(self.first_ip)
@@ -177,7 +175,7 @@ class ReloadRulesRequest(models.Model):
             obj.at = datetime.now()
             obj.save()
         else:
-            cls.objects.create() 
+            cls.objects.create()
 
     @staticmethod
     def last_request():
@@ -186,4 +184,3 @@ class ReloadRulesRequest(models.Model):
         if len(rrs) > 0:
             result = rrs[0].at
         return result
-

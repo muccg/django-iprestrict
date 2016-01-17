@@ -1,5 +1,3 @@
-# vim:fileencoding=utf-8
-
 from iprestrict import models
 from django.contrib import admin
 from django import forms

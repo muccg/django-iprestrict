@@ -1,5 +1,3 @@
-# vim:fileencoding=utf-8
-
 from django.core import exceptions
 from django.utils import log
 from iprestrict.models import ReloadRulesRequest

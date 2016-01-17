@@ -1,5 +1,3 @@
-# vim:fileencoding=utf-8
-
 from functools import wraps
 from django.utils.translation import ugettext as _
 from django.contrib.admin.forms import AdminAuthenticationForm
@@ -37,4 +35,3 @@ def superuser_required(view_func):
         }
         return login(request, **defaults)
     return _checklogin
-

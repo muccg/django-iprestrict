@@ -1,5 +1,3 @@
-# vim:fileencoding=utf-8
-
 from django.conf.urls import patterns, url
 
 urlpatterns = patterns('iprestrict.views',
@@ -9,4 +7,3 @@ urlpatterns = patterns('iprestrict.views',
     url(r'^reload_rules[/]?$', 'reload_rules'),
     url(r'^test_match[/]?$', 'test_match'),
 )
-
