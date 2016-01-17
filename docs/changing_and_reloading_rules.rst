@@ -1,6 +1,8 @@
 Changing and reloading rules
 ============================
 
+.. _rules-are-cached:
+
 Rules are cached
 ----------------
 
