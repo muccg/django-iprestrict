@@ -1,2 +1,2 @@
 Django
-https://github.com/muccg/django-templatetag-handlebars/archive/1.3.2.dev1.tar.gz
+django-templatetag-handlebars==1.3.1
