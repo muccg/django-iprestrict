@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django-iprestrict',
-    version='0.4.0',
+    version='0.4.1',
     description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     long_description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     author='Tamas Szabo, CCG, Murdoch University',
