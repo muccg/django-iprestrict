@@ -1,8 +1,19 @@
+import os
+import re
 from setuptools import setup
+
+def get_package_version(package):
+    version = re.compile(r"(?:__)?version(?:__)?\s*=\s\"(.*)\"", re.I)
+    initfile = os.path.join(os.path.dirname(__file__), package, "__init__.py")
+    for line in open(initfile):
+        m = version.match(line)
+        if m:
+            return m.group(1)
+    return "UNKNOWN"
 
 setup(
     name='django-iprestrict',
-    version='0.4.1',
+    version=get_package_version("iprestrict"),
     description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     long_description='Django app + middleware to restrict access to all or sections of a Django project by client IP ranges',
     author='Tamas Szabo, CCG, Murdoch University',
