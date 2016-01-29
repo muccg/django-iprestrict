@@ -28,11 +28,11 @@ Make sure that the egg template loader is enabled in your setting file::
 
 Add the urls of iprestrict to your project. Ex in your root urls.py::
 
-  from django.conf.urls import patterns, url, include
+  from django.conf.urls import url, include
 
-  urlpatterns = patterns('',
+  urlpatterns = [
       # ... snip ...
-      (r'^iprestrict/', include('iprestrict.urls')),
+      url(r'^iprestrict/', include('iprestrict.urls')),
 
 This configuration should be enough to let you configure and test your restriction rules.
 
