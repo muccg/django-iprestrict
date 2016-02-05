@@ -31,7 +31,7 @@ class IPRangeForm(forms.ModelForm):
             # first_ip is Mandatory, so just let the default validator catch this
             return cleaned_data
         last_ip = cleaned_data['last_ip']
-        cidr = cleaned_data['cidr_prefix_length']
+        cidr = cleaned_data.get('cidr_prefix_length', None)
 
         if last_ip and cidr:
             raise forms.ValidationError("Don't specify the Last IP if you specified a CIDR prefix length")
