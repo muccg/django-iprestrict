@@ -31,6 +31,7 @@ setup(
         'iprestrict',
         'iprestrict.management',
         'iprestrict.management.commands',
+        'iprestrict.migrations',
     ],
     include_package_data=True,
     zip_safe=False,
