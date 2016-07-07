@@ -12,16 +12,16 @@ class IPRestrictMiddleware(object):
     restrictor = None
     trusted_proxies = None
     allow_proxies = None
-    dont_reload_rules = None
+    reload_rules = None
 
     def __init__(self):
         self.restrictor = IPRestrictor()
         self.trusted_proxies = tuple(get_setting('IPRESTRICT_TRUSTED_PROXIES', 'TRUSTED_PROXIES', []))
-        self.dont_reload_rules = bool(get_setting('IPRESTRICT_DONT_RELOAD_RULES', 'DONT_RELOAD_RULES', False))
+        self.reload_rules = get_reload_rules_setting()
         self.ignore_proxy_header = bool(get_setting('IPRESTRICT_IGNORE_PROXY_HEADER', 'IGNORE_PROXY_HEADER', False))
 
     def process_request(self, request):
-        if not self.dont_reload_rules:
+        if self.reload_rules:
             self.reload_rules_if_needed()
 
         url = request.path_info
@@ -63,9 +63,20 @@ def get_setting(new_name, old_name, default=None):
     setting_name = new_name
     if hasattr(settings, old_name):
         setting_name = old_name
-        warnings.warn("The setting name '%s' has been deprecated and it "
-            "will be removed in a future version. Please use '%s' instead." % (old_name, new_name))
-            # DeprecationWarnings are ignored by default, so lets make sure that
-            # the warnings are shown by using the default UserWarning instead
+        warn_about_changed_setting(old_name, new_name)
     return getattr(settings, setting_name, default)
 
+
+def get_reload_rules_setting():
+    if hasattr(settings, 'DONT_RELOAD_RULES'):
+        warn_about_changed_setting('DONT_RELOAD_RULES', 'IPRESTRICT_RELOAD_RULES')
+        return not bool(getattr(settings, 'DONT_RELOAD_RULES'))
+    return bool(getattr(settings, 'IPRESTRICT_RELOAD_RULES', True))
+
+
+def warn_about_changed_setting(old_name, new_name):
+    # DeprecationWarnings are ignored by default, so lets make sure that
+    # the warnings are shown by using the default UserWarning instead
+    warnings.warn("The setting name '%s' has been deprecated and it "
+        "will be removed in a future version. Please use '%s' instead." % (old_name, new_name))
+ 
