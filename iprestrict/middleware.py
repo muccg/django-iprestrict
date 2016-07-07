@@ -27,7 +27,7 @@ class IPRestrictMiddleware(object):
         client_ip = self.extract_client_ip(request)
 
         if self.restrictor.is_restricted(url, client_ip):
-            logger.info("Denying access of %s to %s" % (url, client_ip))
+            logger.warn("Denying access of %s to %s" % (url, client_ip))
             raise exceptions.PermissionDenied
 
     def extract_client_ip(self, request):
@@ -40,7 +40,7 @@ class IPRestrictMiddleware(object):
                 proxies = [closest_proxy] + forwarded_for
                 for proxy in proxies:
                     if proxy not in self.trusted_proxies:
-                        logger.info("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
+                        logger.warn("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
                         raise exceptions.PermissionDenied
         return client_ip
 
