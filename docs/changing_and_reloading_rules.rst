@@ -12,7 +12,7 @@ This also means that if the rule are changed they have to be re-loaded somehow i
 One possibility is to just restart your server after you change the rules and you want them to become into effect.
 In case this is acceptable for you just set the following variable into your settings file::
 
-  DONT_RELOAD_RULES = True
+  IPRESTRICT_DONT_RELOAD_RULES = True
 
 The second possibility (which is the default behaviour) is to request a rule reload. The next time the middleware will receive a request the rules will be reloaded. There is a custom management command for reloading rules::
 

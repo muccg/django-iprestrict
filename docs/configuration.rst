@@ -126,8 +126,8 @@ Settings
 Django IP Restrict has settings to adapt to the environment in which
 your app is hosted in.
 
-DONT_RELOAD_RULES
-~~~~~~~~~~~~~~~~~
+IPRESTRICT_DONT_RELOAD_RULES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Default: ``False``
 
@@ -135,8 +135,8 @@ When enabled, rules will be reloaded only after restarting the
 server. See :ref:`rules-are-cached`.
 
 
-IGNORE_PROXY_HEADER
-~~~~~~~~~~~~~~~~~~~
+IPRESTRICT_IGNORE_PROXY_HEADER
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Default: ``False``
 
@@ -146,8 +146,8 @@ middleware would block requests with a suspect value for
 ``X-Forwarded-For``.
 
 
-TRUSTED_PROXIES
-~~~~~~~~~~~~~~~
+IPRESTRICT_TRUSTED_PROXIES
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Default: ``[]`` (Empty List)
 

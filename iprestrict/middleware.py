@@ -1,6 +1,7 @@
 from django.core import exceptions
 from django.conf import settings
 import logging
+import warnings
 from .models import ReloadRulesRequest
 from .restrictor import IPRestrictor
 
@@ -15,9 +16,9 @@ class IPRestrictMiddleware(object):
 
     def __init__(self):
         self.restrictor = IPRestrictor()
-        self.trusted_proxies = tuple(getattr(settings, 'TRUSTED_PROXIES', []))
-        self.dont_reload_rules = bool(getattr(settings, 'DONT_RELOAD_RULES', False))
-        self.ignore_proxy_header = bool(getattr(settings, 'IGNORE_PROXY_HEADER', False))
+        self.trusted_proxies = tuple(get_setting('IPRESTRICT_TRUSTED_PROXIES', 'TRUSTED_PROXIES', []))
+        self.dont_reload_rules = bool(get_setting('IPRESTRICT_DONT_RELOAD_RULES', 'DONT_RELOAD_RULES', False))
+        self.ignore_proxy_header = bool(get_setting('IPRESTRICT_IGNORE_PROXY_HEADER', 'IGNORE_PROXY_HEADER', False))
 
     def process_request(self, request):
         if not self.dont_reload_rules:
@@ -56,3 +57,15 @@ class IPRestrictMiddleware(object):
         if last_reload_request is not None:
             if self.restrictor.last_reload < last_reload_request:
                 self.restrictor.reload_rules()
+
+
+def get_setting(new_name, old_name, default=None):
+    setting_name = new_name
+    if hasattr(settings, old_name):
+        setting_name = old_name
+        warnings.warn("The setting name '%s' has been deprecated and it "
+            "will be removed in a future version. Please use '%s' instead." % (old_name, new_name))
+            # DeprecationWarnings are ignored by default, so lets make sure that
+            # the warnings are shown by using the default UserWarning instead
+    return getattr(settings, setting_name, default)
+
