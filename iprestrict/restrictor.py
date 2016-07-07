@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 
 
 class IPRestrictor(object):
@@ -18,6 +18,6 @@ class IPRestrictor(object):
         # We are caching the rules, to avoid DB lookup on each request
         from .models import Rule
         self.rules = list(Rule.objects.all())
-        self.last_reload = datetime.now()
+        self.last_reload = timezone.now()
 
     reload_rules = load_rules

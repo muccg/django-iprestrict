@@ -8,8 +8,6 @@ from iprestrict import models
 from iprestrict import restrictor
 from iprestrict.middleware import IPRestrictMiddleware
 
-from datetime import datetime
-
 LOCAL_IP = '192.168.1.1'
 PROXY = '1.1.1.1'
 

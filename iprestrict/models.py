@@ -1,7 +1,7 @@
 import re
 from django.core.urlresolvers import reverse
 from django.db import models
-from datetime import datetime
+from django.utils import timezone
 from . import ip_utils as ipu
 
 
@@ -176,7 +176,7 @@ class ReloadRulesRequest(models.Model):
         rrs = ReloadRulesRequest.objects.all()
         if len(rrs) > 0:
             obj = rrs[0]
-            obj.at = datetime.now()
+            obj.at = timezone.now()
             obj.save()
         else:
             cls.objects.create()
