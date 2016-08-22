@@ -4,16 +4,14 @@ Configuration
 Setting up the app
 ------------------
 
-Add ``iprestrict``, ``south`` (if you aren't using south already) and ``templatetag_handlebars`` to ``INSTALLED_APPS`` in your settings file::
+Add ``iprestrict``, and ``templatetag_handlebars`` to
+``INSTALLED_APPS`` in your settings file::
 
   INSTALLED_APPS = (
     ...
-    'south',
     'templatetag_handlebars',
     'iprestrict',
   )
-
-In case you didn't had South installed already run ``syncdb`` to create South's database schema.
 
 Run the migrations for the ``iprestrict`` application::
 
@@ -30,11 +28,11 @@ Make sure that the egg template loader is enabled in your setting file::
 
 Add the urls of iprestrict to your project. Ex in your root urls.py::
 
-  from django.conf.urls import patterns, url, include
+  from django.conf.urls import url, include
 
-  urlpatterns = patterns('',
+  urlpatterns = [
       # ... snip ...
-      (r'^iprestrict/', include('iprestrict.urls')),
+      url(r'^iprestrict/', include('iprestrict.urls')),
 
 This configuration should be enough to let you configure and test your restriction rules.
 
@@ -121,3 +119,38 @@ Add ``iprestrict.middleware.IPRestrictMiddleware`` to your ``MIDDLEWARE_CLASSES`
 
 Your Django project is now restricted based on the rules defined.
 
+
+Settings
+--------
+
+Django IP Restrict has settings to adapt to the environment in which
+your app is hosted in.
+
+IPRESTRICT_RELOAD_RULES
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Default: ``True``
+
+When set to ``False`` rules will be reloaded only after restarting the
+server. See :ref:`rules-are-cached`.
+
+
+IPRESTRICT_IGNORE_PROXY_HEADER
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Default: ``False``
+
+When this setting is ``True``, Django IP Restrict will completely
+disregard the ``X-Forwarded-For`` HTTP header. Normally, the
+middleware would block requests with a suspect value for
+``X-Forwarded-For``.
+
+
+IPRESTRICT_TRUSTED_PROXIES
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Default: ``[]`` (Empty List)
+
+Use this setting when your app is hosted behind a reverse proxy. When
+values are provided, they will be checked against the HTTP
+``X-Forwarded-For`` header to determine the true client IP address.

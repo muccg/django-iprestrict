@@ -1,6 +1,4 @@
-# vim:fileencoding=utf-8
-from iprestrict import models
-from datetime import datetime
+from django.utils import timezone
 
 
 class IPRestrictor(object):
@@ -18,7 +16,8 @@ class IPRestrictor(object):
 
     def load_rules(self):
         # We are caching the rules, to avoid DB lookup on each request
-        self.rules = [r for r in models.Rule.objects.all()]
-        self.last_reload = datetime.now()
+        from .models import Rule
+        self.rules = list(Rule.objects.all())
+        self.last_reload = timezone.now()
 
     reload_rules = load_rules

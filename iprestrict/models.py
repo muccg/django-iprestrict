@@ -1,10 +1,8 @@
-# vim:fileencoding=utf-8
-
+import re
 from django.core.urlresolvers import reverse
 from django.db import models
-from datetime import datetime
-import re
-from iprestrict import ip_utils as ipu
+from django.utils import timezone
+from . import ip_utils as ipu
 
 
 class IPGroup(models.Model):
@@ -36,8 +34,10 @@ class IPGroup(models.Model):
     def ranges_str(self):
         return ', '.join([str(r) for r in self.ranges()])
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
+
+    __unicode__ = __str__
 
 
 class IPRange(models.Model):
@@ -70,21 +70,23 @@ class IPRange(models.Model):
 
     @property
     def ip_type(self):
-        if not self.first_ip: 
+        if not self.first_ip:
             return ''
         return ipu.get_version(self.first_ip)
 
     def __contains__(self, ip):
         ip_nr = ipu.to_number(ip)
-        return self.start <= ip_nr <= self.end 
+        return self.start <= ip_nr <= self.end
 
-    def __unicode__(self):
+    def __str__(self):
         result = str(self.first_ip)
         if self.cidr_prefix_length is not None:
             result += '/' + str(self.cidr_prefix_length)
         elif self.last_ip is not None:
             result += '-' + str(self.last_ip)
         return result
+
+    __unicode__ = __str__
 
 
 class Rule(models.Model):
@@ -174,10 +176,10 @@ class ReloadRulesRequest(models.Model):
         rrs = ReloadRulesRequest.objects.all()
         if len(rrs) > 0:
             obj = rrs[0]
-            obj.at = datetime.now()
+            obj.at = timezone.now()
             obj.save()
         else:
-            cls.objects.create() 
+            cls.objects.create()
 
     @staticmethod
     def last_request():
@@ -186,4 +188,3 @@ class ReloadRulesRequest(models.Model):
         if len(rrs) > 0:
             result = rrs[0].at
         return result
-

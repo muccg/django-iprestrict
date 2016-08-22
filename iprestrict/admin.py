@@ -1,9 +1,7 @@
-# vim:fileencoding=utf-8
-
-from iprestrict import models
 from django.contrib import admin
 from django import forms
-import ip_utils as ipu
+from . import ip_utils as ipu
+from . import models
 
 
 class RuleAdmin(admin.ModelAdmin):
@@ -16,7 +14,7 @@ class RuleAdmin(admin.ModelAdmin):
 class IPRangeForm(forms.ModelForm):
     class Meta:
         model = models.IPRange
-        fields = '__all__'
+        exclude = ()
 
     def clean_cidr_prefix_length(self):
         cidr = self.cleaned_data['cidr_prefix_length']
@@ -33,7 +31,7 @@ class IPRangeForm(forms.ModelForm):
             # first_ip is Mandatory, so just let the default validator catch this
             return cleaned_data
         last_ip = cleaned_data['last_ip']
-        cidr = cleaned_data['cidr_prefix_length']
+        cidr = cleaned_data.get('cidr_prefix_length', None)
 
         if last_ip and cidr:
             raise forms.ValidationError("Don't specify the Last IP if you specified a CIDR prefix length")
@@ -71,4 +69,3 @@ class IPGroupAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Rule, RuleAdmin)
 admin.site.register(models.IPGroup, IPGroupAdmin)
-

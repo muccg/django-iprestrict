@@ -1,15 +1,35 @@
+sudo: false
 language: python
 python:
-  - "2.7"
+  - "3.5"
 env:
-#  - DJANGO=1.3.1 DB=sqlite
-  - DJANGO=1.5 DB=sqlite
-  - DJANGO=1.6 DB=sqlite
-  - DJANGO=1.7 DB=sqlite
+  global:
+    - COVERAGE=1 RUNTEST_ARGS="-v --noinput"
+  matrix:
+    # Quality checks
+    - TOXENV=flake8
+    # Supported python/django versions
+    - TOXENV=py27-django-17
+    - TOXENV=py27-django-18
+    - TOXENV=py27-django-19
+    - TOXENV=py34-django-17
+    - TOXENV=py34-django-18
+    - TOXENV=py34-django-19
+    - TOXENV=py35-django-18
+    - TOXENV=py35-django-19
+    # Django master is allowed to fail
+    - TOXENV=py27-django-master
+    - TOXENV=py35-django-master
 install:
-  - pip install -q Django==$DJANGO
-  - pip install coveralls coverage django-discover-runner
-script:
-  - coverage run --rcfile=.coverage.rc setup.py test
-after_success:
-  - coveralls
+  - pip install tox coveralls
+matrix:
+  allow_failures:
+    # Master is allowed to fail
+    - env: TOXENV=py27-django-master
+    - env: TOXENV=py35-django-master
+    # Flake is allowed to fail ... for now
+    - env: TOXENV=flake8
+before_script:
+  - coverage erase
+script: tox
+after_success: coveralls

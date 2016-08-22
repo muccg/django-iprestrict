@@ -1,6 +1,3 @@
-# vim:fileencoding=utf-8
-
-
 def get_version(ip):
     return 'ipv4' if '.' in ip else 'ipv6'
 
@@ -30,5 +27,4 @@ def cidr_to_range(ip, prefix_length):
     end_mask = int('1' * (32 - prefix_length), 2)
     start = ip & start_mask
     end = start | end_mask
-    return (start, end) 
-
+    return (start, end)

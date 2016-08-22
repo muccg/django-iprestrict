@@ -1,16 +1,18 @@
 Changing and reloading rules
 ============================
 
+.. _rules-are-cached:
+
 Rules are cached
 ----------------
 
 In order to avoid the reload of rules on each request the rules are cached on the first load from the middleware.
 This also means that if the rule are changed they have to be re-loaded somehow into the middleware.
 
-One possibility is to just restart your server after you change the rules and you want them to become into effect.
+One possibility is to just restart your server after you change the rules.
 In case this is acceptable for you just set the following variable into your settings file::
 
-  DONT_RELOAD_RULES = True
+  IPRESTRICT_RELOAD_RULES = False
 
 The second possibility (which is the default behaviour) is to request a rule reload. The next time the middleware will receive a request the rules will be reloaded. There is a custom management command for reloading rules::
 
