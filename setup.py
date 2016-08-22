@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-__version__ = '.'.join(map(str, (0, 1, 2)))
+__version__ = '.'.join(map(str, (0, 1, 3)))
 __author__ = 'Tamas Szabo'
 
 description = 'Django app + middleware to restrict access to all or sections of a Django project by client IP ranges'
@@ -23,8 +23,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django>=1.4',
-        'South>=0.7.6',
+        'Django>=1.7',
         'django-templatetag-handlebars>=1.2.0',
     ],
     test_suite='tests.runtests.main'
