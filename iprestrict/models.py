@@ -141,13 +141,13 @@ class Rule(models.Model):
         self.swap_with_rule(rules_above[0])
 
     def move_up_url(self):
-        url = reverse('move_rule_up', args=[self.pk])
+        url = reverse('iprestrict:iprestrict.views.move_rule_up', args=[self.pk])
         return '<a href="%s">Move Up</a>' % url
     move_up_url.allow_tags = True
     move_up_url.short_description = 'Move Up'
 
     def move_down_url(self):
-        url = reverse('move_rule_down', args=[self.pk])
+        url = reverse('iprestrict:iprestrict.views.move_rule_down', args=[self.pk])
         return '<a href="%s">Move Down</a>' % url
     move_down_url.allow_tags = True
     move_down_url.short_description = 'Move Down'
