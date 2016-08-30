@@ -34,8 +34,11 @@ def test_rules_page(request):
 
 @superuser_required
 def test_match(request):
-    url = request.REQUEST['url']
-    ip = request.REQUEST['ip']
+    request_dict = request.GET
+    if request.method == 'POST':
+        request_dict = request.POST
+    url = request_dict['url']
+    ip = request_dict['ip']
 
     matching_rule_id, action = find_matching_rule(url, ip)
     rules = list_rules(matching_rule_id, url, ip)
