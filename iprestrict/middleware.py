@@ -4,17 +4,25 @@ import logging
 import warnings
 from .models import ReloadRulesRequest
 from .restrictor import IPRestrictor
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    class  MiddlewareMixin(object):
+        def __init__(self, *args, **kwargs):
+            pass
+
 
 logger = logging.getLogger(__name__)
 
 
-class IPRestrictMiddleware(object):
+class IPRestrictMiddleware(MiddlewareMixin):
     restrictor = None
     trusted_proxies = None
     allow_proxies = None
     reload_rules = None
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super(IPRestrictMiddleware, self).__init__(*args, **kwargs)
         self.restrictor = IPRestrictor()
         self.trusted_proxies = tuple(get_setting('IPRESTRICT_TRUSTED_PROXIES', 'TRUSTED_PROXIES', []))
         self.reload_rules = get_reload_rules_setting()
