@@ -19,20 +19,13 @@ Run the migrations for the ``iprestrict`` application::
 
 Enable Django Admin for at least the iprestrict application.
 
-Make sure that the egg template loader is enabled in your setting file::
-
-  TEMPLATE_LOADERS = (
-    ...
-    'django.template.loaders.eggs.Loader',
-  )
-
 Add the urls of iprestrict to your project. Ex in your root urls.py::
 
   from django.conf.urls import url, include
 
   urlpatterns = [
       # ... snip ...
-      url(r'^iprestrict/', include('iprestrict.urls')),
+      url(r'^iprestrict/', include('iprestrict.urls', namespace='iprestrict')),
 
 This configuration should be enough to let you configure and test your restriction rules.
 
