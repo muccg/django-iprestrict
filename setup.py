@@ -36,7 +36,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django>=1.7',
+        'Django>=1.8',
         'django-templatetag-handlebars',
     ],
     test_suite='tests.runtests.main',

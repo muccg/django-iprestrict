@@ -7,7 +7,7 @@ Requirements
 Runtime
 ^^^^^^^
 
-* Django 1.7+
+* Django 1.8+
 * django-templatetag-handlebars 1.3.1+
 
 Development
@@ -24,8 +24,3 @@ Installation
 You can pip install from PyPI::
 
     pip install django-iprestrict
-
-Alternately, you can select a release from Github and install that
-with pip::
-
-    pip install https://github.com/muccg/django-iprestrict/archive/0.4.1.zip
