@@ -13,11 +13,9 @@ class Command(BaseCommand):
 
         self.delete_existing_rules()
         if verbosity >= 1:
-            self.stdout.write('Successfully deleted rules\n')
+            self.stdout.write('Successfully deleted rules')
 
-        call_command('loaddata', *args,
-            verbosity=verbosity,
-            interactive=False)
+        call_command('loaddata', *args, verbosity=verbosity, interactive=False)
 
     def delete_existing_rules(self):
         models.Rule.objects.all().delete()

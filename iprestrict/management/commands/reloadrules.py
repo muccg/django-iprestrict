@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from ... import models
 from ...middleware import get_reload_rules_setting
 
@@ -11,10 +11,9 @@ class Command(BaseCommand):
 
         reload_rules = get_reload_rules_setting()
         if not reload_rules:
-            self.stderr.write("IPRESTRICT_RELOAD_RULES is set to False. "
-                    "Your IPRestrict rules can't be changed dynamically.")
-            return
+            raise CommandError("IPRESTRICT_RELOAD_RULES is set to False. "
+                               "Your IPRestrict rules can't be changed dynamically.")
 
         models.ReloadRulesRequest.request_reload()
         if verbosity >= 1:
-            self.stdout.write('Successfully requested reload of rules\n')
+            self.stdout.write('Successfully requested reload of rules')

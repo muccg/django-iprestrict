@@ -7,7 +7,7 @@ from .restrictor import IPRestrictor
 try:
     from django.utils.deprecation import MiddlewareMixin
 except ImportError:
-    class  MiddlewareMixin(object):
+    class MiddlewareMixin(object):
         def __init__(self, *args, **kwargs):
             pass
 
@@ -85,6 +85,5 @@ def get_reload_rules_setting():
 def warn_about_changed_setting(old_name, new_name):
     # DeprecationWarnings are ignored by default, so lets make sure that
     # the warnings are shown by using the default UserWarning instead
-    warnings.warn("The setting name '%s' has been deprecated and it "
-        "will be removed in a future version. Please use '%s' instead." % (old_name, new_name))
- 
+    warnings.warn("The setting name '%s' has been deprecated and it will be removed in a future version. "
+                  "Please use '%s' instead." % (old_name, new_name))

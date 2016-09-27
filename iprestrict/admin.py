@@ -37,7 +37,8 @@ class IPRangeForm(forms.ModelForm):
             raise forms.ValidationError("Don't specify the Last IP if you specified a CIDR prefix length")
         if last_ip:
             if ipu.get_version(first_ip) != ipu.get_version(last_ip):
-                raise forms.ValidationError("Last IP should be the same type as First IP (%s)" % ipu.get_version(first_ip))
+                raise forms.ValidationError(
+                        "Last IP should be the same type as First IP (%s)" % ipu.get_version(first_ip))
             if ipu.get_version(last_ip) != 'ipv6':
                 # Ignore rest of validation for ipv6, support isn't there yet
                 if ipu.to_number(first_ip) > ipu.to_number(last_ip):
