@@ -7,13 +7,16 @@ By using this module we allow:
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
 
-has_geoip2 = True
+available_geoip = 2
 try:
     from django.contrib.gis.geoip2 import GeoIP2
     from django.contrib.gis.geoip2.errors import AddressNotFoundError
 except ImportError:
-    has_geoip2 = False
-    from django.contrib.gis.geoip import GeoIP
+    available_geoip = 1
+    try:
+        from django.contrib.gis.geoip import GeoIP
+    except ImportError:
+        available_geoip = None
 try:
     from pycountry import countries
 except ImportError:
@@ -53,7 +56,12 @@ class OurGeoIP(object):
 
 _geoip = OurGeoIP()
 if getattr(settings, 'IPRESTRICT_GEOIP_ENABLED', True):
-    _geoip = AdaptedGeoIP2() if has_geoip2 else GeoIP()
+    if available_geoip is None:
+        raise ImproperlyConfigured(
+            "'IPRESTRICT_GEOIP_ENABLED' is set to True, but neither geoip nor geoip2 is available "
+            " to import. Make sure the geoip libraries are installed as described in the Django "
+            "documentation")
+    _geoip = AdaptedGeoIP2() if available_geoip == 2 else GeoIP()
 
 
 def get_geoip():
