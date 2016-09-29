@@ -1,16 +1,18 @@
 from django.test import TestCase
+import mock
 from django.http import HttpResponseForbidden
 
 import iprestrict
 from iprestrict import models
-        
+
+
 class RuleTest(TestCase):
     def test_restriction_methods_for_allow_rule(self):
         rule = models.Rule(url_pattern='', action='A')
         self.assertTrue(rule.is_allowed())
         self.assertFalse(rule.is_restricted())
 
-    def test_restiction_methods_for_deny_rule(self):
+    def test_restriction_methods_for_deny_rule(self):
         rule = models.Rule(url_pattern='', action='D')
         self.assertFalse(rule.is_allowed())
         self.assertTrue(rule.is_restricted())
@@ -38,6 +40,7 @@ class RuleTest(TestCase):
         rule1.action = 'D'
         rule1.save()
         self.assertEquals(rule1.rank, 1)
+
 
 class RuleWithSampleRulesTests(TestCase):
     def setUp(self):
@@ -76,16 +79,16 @@ class RuleWithSampleRulesTests(TestCase):
         self.assertEqual(rules[2].url_pattern, '1')
 
 
-class IPGroupTest(TestCase):
+class RangeBasedIPGroupTest(TestCase):
     def test_first_ip_group_is_all(self):
         '''An IP definition matching all should be inserted by default'''
-        all_group = models.IPGroup.objects.get(name='ALL')
+        all_group = models.RangeBasedIPGroup.objects.get(name='ALL')
         self.assertTrue(all_group.matches('192.168.1.1'))
         self.assertTrue(all_group.matches('200.200.200.200'))
         self.assertTrue(all_group.matches('1.2.3.4'))
 
     def test_matches_with_ranges(self):
-        ipgroup = models.IPGroup.objects.create(name='Local IPs')
+        ipgroup = models.RangeBasedIPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.1', last_ip='192.168.1.10')
         iprange2 = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.100', last_ip='192.168.1.110')
 
@@ -101,7 +104,7 @@ class IPGroupTest(TestCase):
         self.assertFalse(ipgroup.matches('192.168.1.99'))
 
     def test_ipv6_and_ip4_are_separated(self):
-        ipgroup = models.IPGroup.objects.create(name='Local IPs')
+        ipgroup = models.RangeBasedIPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='::1')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='0.0.0.2')
         ipgroup.load_ranges()
@@ -113,7 +116,7 @@ class IPGroupTest(TestCase):
         #self.assertTrue(ipgroup.matches('::1'))
 
     def test_matches_with_subnets(self):
-        ipgroup = models.IPGroup.objects.create(name='Local IPs')
+        ipgroup = models.RangeBasedIPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.0', cidr_prefix_length=30)
 
         ipgroup.load_ranges()
@@ -126,7 +129,7 @@ class IPGroupTest(TestCase):
         self.assertFalse(ipgroup.matches('192.168.1.4'))
 
     def test_matches_subnet_first_ip_not_correct(self):
-        ipgroup = models.IPGroup.objects.create(name='Local IPs')
+        ipgroup = models.RangeBasedIPGroup.objects.create(name='Local IPs')
         iprange = models.IPRange.objects.create(ip_group=ipgroup, 
             first_ip='192.168.1.2', # Should be '192.168.1.1'
             cidr_prefix_length=30)
@@ -140,5 +143,28 @@ class IPGroupTest(TestCase):
         self.assertFalse(ipgroup.matches('192.168.0.255'))
         self.assertFalse(ipgroup.matches('192.168.1.4'))
 
-       
 
+class LocationBasedIPGroupTest(TestCase):
+    def setUp(self):
+        self.ipgroup = models.LocationBasedIPGroup.objects.create(name='Test Location')
+        models.IPLocation.objects.create(ip_group=self.ipgroup, country_codes='AU, HU')
+        models.IPLocation.objects.create(ip_group=self.ipgroup, country_codes='BR')
+
+    def test_matches_ips(self):
+        with mock.patch('iprestrict.models.geoip') as m:
+
+            self.ipgroup.load_locations()
+
+            # instructing geoip to return 'AU' for this IP
+            m.country_code.return_value = 'AU'
+            self.assertTrue(self.ipgroup.matches('192.168.1.1'))
+
+            # instructing geoip to return 'HU' for this IP, etc.
+            m.country_code.return_value = 'HU'
+            self.assertTrue(self.ipgroup.matches('192.168.1.2'))
+
+            m.country_code.return_value = 'BR'
+            self.assertTrue(self.ipgroup.matches('192.168.1.3'))
+
+            m.country_code.return_value = 'FR'
+            self.assertFalse(self.ipgroup.matches('10.1.1.1'))

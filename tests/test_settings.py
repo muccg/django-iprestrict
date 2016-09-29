@@ -179,3 +179,5 @@ TEMPLATES = [{
         ],
     }
 }]
+
+GEOIP_PATH = '/opt/GeoIPDBs'

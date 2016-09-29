@@ -11,6 +11,7 @@ from iprestrict.middleware import IPRestrictMiddleware
 LOCAL_IP = '192.168.1.1'
 PROXY = '1.1.1.1'
 
+
 class MiddlewareRestrictsTest(TestCase):
     '''
     When the middleware is enabled it should restrict all IPs(but localhost)/URLs by default.
@@ -44,9 +45,10 @@ class MiddlewareRestrictsTest(TestCase):
 
 
 def create_ip_allow_rule(ip=LOCAL_IP):
-    localip = models.IPGroup.objects.create(name='localip')
+    localip = models.RangeBasedIPGroup.objects.create(name='localip')
     models.IPRange.objects.create(ip_group=localip, first_ip=LOCAL_IP)
     models.Rule.objects.create(url_pattern='ALL', ip_group = localip, action='A')
+
 
 class MiddlewareAllowsTest(TestCase):
     def setUp(self):
@@ -74,6 +76,7 @@ class MiddlewareAllowsTest(TestCase):
         response = self.client.get('', REMOTE_ADDR = PROXY, HTTP_X_FORWARDED_FOR = LOCAL_IP)
         self.assertEqual(response.status_code, 403)
 
+
 class ReloadRulesTest(TestCase):
     def setUp(self):
         create_ip_allow_rule()
@@ -84,6 +87,7 @@ class ReloadRulesTest(TestCase):
 
         response = self.client.get('', REMOTE_ADDR = LOCAL_IP)
         self.assertEqual(response.status_code, 404)
+
 
 class MiddlewareExtractClientIpTest(TestCase):
     def setUp(self):
