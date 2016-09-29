@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from . import ip_utils as ipu
-from .geoip import get_geoip
+from .geoip import get_geoip, NO_COUNTRY
 
 
 TYPE_LOCATION = 'location'
@@ -107,7 +107,7 @@ class LocationBasedIPGroup(IPGroup):
     load = load_locations
 
     def matches(self, ip):
-        country_code = geoip.country_code(ip) or geoip.NO_COUNTRY
+        country_code = geoip.country_code(ip) or NO_COUNTRY
         return country_code in self._countries
 
     def details_str(self):
