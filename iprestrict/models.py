@@ -3,23 +3,80 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
 from . import ip_utils as ipu
+from .geoip import get_geoip, NO_COUNTRY
+
+
+TYPE_LOCATION = 'location'
+TYPE_RANGE = 'range'
+
+
+geoip = get_geoip()
+
+
+class IPGroupManager(models.Manager):
+    def get_queryset(self):
+        qs = super(IPGroupManager, self).get_queryset()
+        if self.model.TYPE is not None:
+            return qs.filter(type=self.model.TYPE)
+        return qs
 
 
 class IPGroup(models.Model):
-    class Meta:
-        verbose_name = "IP Group"
+    TYPE_CHOICES = ((TYPE_LOCATION, 'Location based'),
+                    (TYPE_RANGE, 'Range based'))
+    TYPE = None
 
     name = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
+    type = models.CharField(max_length=10, default=TYPE_RANGE, choices=TYPE_CHOICES)
+
+    class Meta:
+        verbose_name = 'IP Group'
+
+    objects = IPGroupManager()
 
     def __init__(self, *args, **kwargs):
-        models.Model.__init__(self, *args, **kwargs)
-        self.load_ranges()
+        super(IPGroup, self).__init__(*args, **kwargs)
+        self.load()
+
+    def load(self):
+        pass
+
+    def save(self, *args, **kwargs):
+        self.type = self.TYPE
+        super(IPGroup, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+    __unicode__ = __str__
+
+
+def typed_ip_group(ip_group):
+    obj = None
+    if ip_group.type == TYPE_RANGE:
+        obj = RangeBasedIPGroup(pk=ip_group.pk)
+    elif ip_group.type == TYPE_LOCATION:
+        obj = LocationBasedIPGroup(pk=ip_group.pk)
+    else:
+        raise ValueError("Invalid type '%s'" % ip_group.type)
+    obj.__dict__.update(ip_group.__dict__)
+    return obj
+
+
+class RangeBasedIPGroup(IPGroup):
+    TYPE = TYPE_RANGE
+
+    class Meta:
+        proxy = True
+        verbose_name = 'IP Group'
 
     def load_ranges(self):
         self._ranges = {'ipv4': [], 'ipv6': []}
         for r in self.iprange_set.all():
             self._ranges[r.ip_type].append(r)
+
+    load = load_ranges
 
     def ranges(self, ip_type='ipv4'):
         return self._ranges[ip_type]
@@ -31,13 +88,30 @@ class IPGroup(models.Model):
                 return True
         return False
 
-    def ranges_str(self):
+    def details_str(self):
         return ', '.join([str(r) for r in self.ranges()])
 
-    def __str__(self):
-        return self.name
 
-    __unicode__ = __str__
+class LocationBasedIPGroup(IPGroup):
+    TYPE = TYPE_LOCATION
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Location Based IP Group'
+
+    def load_locations(self):
+        countries = ", ".join(self.iplocation_set.values_list('country_codes', flat=True)).split(', ')
+        countries.sort()
+        self._countries = ', '.join(countries)
+
+    load = load_locations
+
+    def matches(self, ip):
+        country_code = geoip.country_code(ip) or NO_COUNTRY
+        return country_code in self._countries
+
+    def details_str(self):
+        return self._countries
 
 
 class IPRange(models.Model):
@@ -89,6 +163,22 @@ class IPRange(models.Model):
     __unicode__ = __str__
 
 
+class IPLocation(models.Model):
+    class Meta:
+        verbose_name = "IP Location"
+
+    ip_group = models.ForeignKey(IPGroup)
+    country_codes = models.CharField(max_length=2000, help_text='Comma-separated list of 2 character country codes')
+
+    def __contains__(self, country_code):
+        return country_code in re.split(r'[^A-Z]+', self.country_codes)
+
+    def __str__(self):
+        return self.country_codes
+
+    __unicode__ = __str__
+
+
 class Rule(models.Model):
     class Meta:
         ordering = ['rank', 'id']
@@ -100,8 +190,13 @@ class Rule(models.Model):
 
     url_pattern = models.CharField(max_length=500)
     ip_group = models.ForeignKey(IPGroup, default=1)
+    reverse_ip_group = models.BooleanField(default=False)
     action = models.CharField(max_length=1, choices=ACTION_CHOICES, default='D')
     rank = models.IntegerField(blank=True)
+
+    def __init__(self, *args, **kwargs):
+        super(Rule, self).__init__(*args, **kwargs)
+        self.ip_group = typed_ip_group(self.ip_group)
 
     @property
     def regex(self):
@@ -116,7 +211,10 @@ class Rule(models.Model):
             return self.regex.match(url) is not None
 
     def matches_ip(self, ip):
-        return self.ip_group.matches(ip)
+        match = typed_ip_group(self.ip_group).matches(ip)
+        if self.reverse_ip_group:
+            return not match
+        return match
 
     def is_restricted(self):
         return self.action != 'A'

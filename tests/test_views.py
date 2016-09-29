@@ -15,7 +15,7 @@ class ReloadViewTest(TestCase):
         models.ReloadRulesRequest.request_reload()
 
     def add_allow_rule(self):
-        localip = models.IPGroup.objects.create(name='Local IP')
+        localip = models.RangeBasedIPGroup.objects.create(name='Local IP')
         models.IPRange.objects.create(ip_group=localip, first_ip=self.IP)
         models.Rule.objects.create(url_pattern='ALL', ip_group = localip, action='A')
 

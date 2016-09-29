@@ -6,7 +6,11 @@
 Django IP Restrict
 ==================
 
-Django IPRestrict is an app + middleware to restrict access to all or sections of a Django project by client IP ranges.
+Django IPRestrict is an app that can be used to restrict access to your Django project by IP addresses.
+
+The restriction can be for the whole site or sections of it.
+
+IP addresses can be specific IP addresses, ranges of IP addresses or IP addresses from given countries.
 
 The code is released under BSD license and it is hosted on github at https://github.com/muccg/django-iprestrict/.
 
