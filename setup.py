@@ -46,6 +46,7 @@ setup(
             'GeoIP==1.3.2',
             ],
         'dev': [
+            'tox',
             'pep8',
             'flake8',
             'mock',
