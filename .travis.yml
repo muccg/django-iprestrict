@@ -2,7 +2,6 @@ sudo: false
 language: python
 python:
   - "3.5"
-sudo: required
 env:
   global:
     - COVERAGE=1 RUNTEST_ARGS="-v --noinput"
@@ -16,9 +15,6 @@ env:
     - TOXENV=py35-django-18
     - TOXENV=py35-django-19
     - TOXENV=py35-django-110
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libgeoip-dev
 install:
   - pip install tox coveralls
 before_script:

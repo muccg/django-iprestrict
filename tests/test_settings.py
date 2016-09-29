@@ -180,4 +180,5 @@ TEMPLATES = [{
     }
 }]
 
+IPRESTRICT_GEOIP_ENABLED = False
 GEOIP_PATH = '/opt/GeoIPDBs'

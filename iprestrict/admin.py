@@ -78,7 +78,7 @@ class IPLocationForm(forms.ModelForm):
                     NOT_LETTER.split(self.cleaned_data['country_codes'].upper())))
 
         if not all(map(is_valid_country_code, codes)):
-            incorrect = filter(lambda c: not is_valid_country_code(c), codes)
+            incorrect = [c for c in codes if not is_valid_country_code(c)]
             msg = ('""%s" must be a valid country code' if len(incorrect) == 1 else
                    '""%s" must be valid country codes')
             raise forms.ValidationError(msg % ', '.join(incorrect))
