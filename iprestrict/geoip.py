@@ -10,7 +10,7 @@ from django.conf import settings
 available_geoip = 2
 try:
     from django.contrib.gis.geoip2 import GeoIP2
-    from django.contrib.gis.geoip2.errors import AddressNotFoundError
+    from geoip2.errors import AddressNotFoundError
 except ImportError:
     available_geoip = 1
     try:
@@ -36,7 +36,7 @@ NO_COUNTRY = 'XX'
 class AdaptedGeoIP2(object):
     '''Makes GeoIP2 behave like GeoIP'''
     def __init__(self, *args, **kwargs):
-        self._geoip = GeoIP2
+        self._geoip = GeoIP2()
 
     def country_code(self, ip):
         # if the IP isn't in the DB return None instead of throwing an Exception as GeoIP does
