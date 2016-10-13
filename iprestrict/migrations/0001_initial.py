@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('url_pattern', models.CharField(max_length=500)),
-                ('action', models.CharField(default=b'D', max_length=1, choices=[(b'A', b'ALLOW'), (b'D', b'DENY')])),
+                ('action', models.CharField(default='D', max_length=1, choices=[('A', 'ALLOW'), ('D', 'DENY')])),
                 ('rank', models.IntegerField(blank=True)),
                 ('ip_group', models.ForeignKey(default=1, to='iprestrict.IPGroup')),
             ],

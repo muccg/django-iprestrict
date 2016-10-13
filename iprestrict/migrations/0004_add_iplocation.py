@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='IPLocation',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('country_codes', models.CharField(help_text=b'Comma-separated list of 2 character country codes', max_length=2000)),
+                ('country_codes', models.CharField(help_text='Comma-separated list of 2 character country codes', max_length=2000)),
             ],
             options={
                 'verbose_name': 'IP Location',
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='ipgroup',
             name='type',
-            field=models.CharField(default=b'range', max_length=10, choices=[(b'location', b'Location based'), (b'range', b'Range based')]),
+            field=models.CharField(default='range', max_length=10, choices=[('location', 'Location based'), ('range', 'Range based')]),
         ),
         migrations.AddField(
             model_name='iplocation',
