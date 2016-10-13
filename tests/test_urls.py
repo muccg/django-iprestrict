@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
 # This file is to be used for testing only
+from __future__ import unicode_literals
+
 
 from django.conf.urls import include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from functools import wraps
 from django.utils.translation import ugettext as _
 from django.contrib.admin.forms import AdminAuthenticationForm

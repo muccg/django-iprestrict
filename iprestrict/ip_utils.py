@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+
 def get_version(ip):
     return 'ipv4' if '.' in ip else 'ipv6'
 

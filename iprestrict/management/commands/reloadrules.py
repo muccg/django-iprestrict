@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.core.management.base import BaseCommand, CommandError
 from ... import models
 from ...middleware import get_reload_rules_setting

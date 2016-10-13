@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.conf.urls import url
 from .views import test_rules_page, test_match, reload_rules
 from .views import move_rule_up, move_rule_down
