@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import re
 from django.core.urlresolvers import reverse
 from django.db import models
