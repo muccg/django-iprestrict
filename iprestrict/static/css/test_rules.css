@@ -20,6 +20,10 @@ input, button {
     padding: 5px;
 }
 
+#ip {
+    width: 9em;
+}
+
 #result {
     font-size: 1.2em;
 }

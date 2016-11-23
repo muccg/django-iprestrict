@@ -1,33 +1,45 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.core import exceptions
 from django.conf import settings
 import logging
+import warnings
 from .models import ReloadRulesRequest
 from .restrictor import IPRestrictor
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    class MiddlewareMixin(object):
+        def __init__(self, *args, **kwargs):
+            pass
+
 
 logger = logging.getLogger(__name__)
 
 
-class IPRestrictMiddleware(object):
+class IPRestrictMiddleware(MiddlewareMixin):
     restrictor = None
     trusted_proxies = None
     allow_proxies = None
-    dont_reload_rules = None
+    reload_rules = None
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super(IPRestrictMiddleware, self).__init__(*args, **kwargs)
         self.restrictor = IPRestrictor()
-        self.trusted_proxies = tuple(getattr(settings, 'TRUSTED_PROXIES', []))
-        self.dont_reload_rules = bool(getattr(settings, 'DONT_RELOAD_RULES', False))
-        self.ignore_proxy_header = bool(getattr(settings, 'IGNORE_PROXY_HEADER', False))
+        self.trusted_proxies = tuple(get_setting('IPRESTRICT_TRUSTED_PROXIES', 'TRUSTED_PROXIES', []))
+        self.reload_rules = get_reload_rules_setting()
+        self.ignore_proxy_header = bool(get_setting('IPRESTRICT_IGNORE_PROXY_HEADER', 'IGNORE_PROXY_HEADER', False))
 
     def process_request(self, request):
-        if not self.dont_reload_rules:
+        if self.reload_rules:
             self.reload_rules_if_needed()
 
         url = request.path_info
         client_ip = self.extract_client_ip(request)
 
         if self.restrictor.is_restricted(url, client_ip):
-            logger.info("Denying access of %s to %s" % (url, client_ip))
+            logger.warn("Denying access of %s to %s" % (url, client_ip))
             raise exceptions.PermissionDenied
 
     def extract_client_ip(self, request):
@@ -40,7 +52,7 @@ class IPRestrictMiddleware(object):
                 proxies = [closest_proxy] + forwarded_for
                 for proxy in proxies:
                     if proxy not in self.trusted_proxies:
-                        logger.info("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
+                        logger.warn("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
                         raise exceptions.PermissionDenied
         return client_ip
 
@@ -56,3 +68,25 @@ class IPRestrictMiddleware(object):
         if last_reload_request is not None:
             if self.restrictor.last_reload < last_reload_request:
                 self.restrictor.reload_rules()
+
+
+def get_setting(new_name, old_name, default=None):
+    setting_name = new_name
+    if hasattr(settings, old_name):
+        setting_name = old_name
+        warn_about_changed_setting(old_name, new_name)
+    return getattr(settings, setting_name, default)
+
+
+def get_reload_rules_setting():
+    if hasattr(settings, 'DONT_RELOAD_RULES'):
+        warn_about_changed_setting('DONT_RELOAD_RULES', 'IPRESTRICT_RELOAD_RULES')
+        return not bool(getattr(settings, 'DONT_RELOAD_RULES'))
+    return bool(getattr(settings, 'IPRESTRICT_RELOAD_RULES', True))
+
+
+def warn_about_changed_setting(old_name, new_name):
+    # DeprecationWarnings are ignored by default, so lets make sure that
+    # the warnings are shown by using the default UserWarning instead
+    warnings.warn("The setting name '%s' has been deprecated and it will be removed in a future version. "
+                  "Please use '%s' instead." % (old_name, new_name))

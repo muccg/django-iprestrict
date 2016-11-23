@@ -26,10 +26,10 @@
     <tr>
         <form>
             <td>
-                <input type="text" name="url" />
+                <input id="url" type="text" name="url" />
             </td>
             <td>
-                <input type="text" name="ip" size='10' />
+                <input id="ip" type="text" name="ip" size='10' />
             </td>
             <td>
                 <button>Test</button>
@@ -74,7 +74,7 @@
                 <td class='{{this.url_pattern.matchStatus}}'>{{this.url_pattern.value}}</td>
                 <td class='{{this.ip_group.matchStatus}}'>
                     {{this.ip_group.name}}</br>
-                    ({{this.ip_group.ranges}})
+                    {{this.ip_group.reverse_ip_group}} ({{this.ip_group.ranges}})
                 </td>
                 <td>{{this.action}}</td>
             </tr>

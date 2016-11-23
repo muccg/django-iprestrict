@@ -31,12 +31,29 @@ setup(
         'iprestrict',
         'iprestrict.management',
         'iprestrict.management.commands',
+        'iprestrict.migrations',
     ],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'Django>=1.7',
-        'django-templatetag-handlebars',
+        'Django>=1.8',
+        'django-templatetag-handlebars==1.3.1',
     ],
+    extras_require={
+        'geoip': [
+            'pycountry==1.20',
+            'geoip2==2.4.0',
+            'GeoIP==1.3.2',
+            ],
+        'dev': [
+            'tox',
+            'pep8',
+            'flake8',
+            'mock',
+            'Sphinx',
+            'django-extensions',
+            'Werkzeug',
+            ],
+    },
     test_suite='tests.runtests.main',
 )

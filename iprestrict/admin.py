@@ -1,14 +1,21 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.contrib import admin
 from django import forms
+import re
 from . import ip_utils as ipu
 from . import models
+from .geoip import is_valid_country_code
 
 
+NOT_LETTER = re.compile(r'[^A-Z]+')
+
+
+@admin.register(models.Rule)
 class RuleAdmin(admin.ModelAdmin):
-    model = models.Rule
-
     exclude = ('rank',)
-    list_display = ('url_pattern', 'ip_group', 'is_allowed', 'move_up_url', 'move_down_url')
+    list_display = ('url_pattern', 'ip_group', 'reverse_ip_group', 'is_allowed', 'move_up_url', 'move_down_url')
 
 
 class IPRangeForm(forms.ModelForm):
@@ -31,13 +38,14 @@ class IPRangeForm(forms.ModelForm):
             # first_ip is Mandatory, so just let the default validator catch this
             return cleaned_data
         last_ip = cleaned_data['last_ip']
-        cidr = cleaned_data['cidr_prefix_length']
+        cidr = cleaned_data.get('cidr_prefix_length', None)
 
         if last_ip and cidr:
             raise forms.ValidationError("Don't specify the Last IP if you specified a CIDR prefix length")
         if last_ip:
             if ipu.get_version(first_ip) != ipu.get_version(last_ip):
-                raise forms.ValidationError("Last IP should be the same type as First IP (%s)" % ipu.get_version(first_ip))
+                raise forms.ValidationError(
+                        "Last IP should be the same type as First IP (%s)" % ipu.get_version(first_ip))
             if ipu.get_version(last_ip) != 'ipv6':
                 # Ignore rest of validation for ipv6, support isn't there yet
                 if ipu.to_number(first_ip) > ipu.to_number(last_ip):
@@ -62,10 +70,42 @@ class IPRangeInline(admin.TabularInline):
     extra = 2
 
 
-class IPGroupAdmin(admin.ModelAdmin):
-    model = models.IPGroup
+class IPLocationForm(forms.ModelForm):
+    class Meta:
+        model = models.IPLocation
+        exclude = ()
+
+    def clean_country_codes(self):
+        codes = self.cleaned_data['country_codes']
+        codes = set(filter(lambda x: x != '',
+                    NOT_LETTER.split(self.cleaned_data['country_codes'].upper())))
+
+        if not all(map(is_valid_country_code, codes)):
+            incorrect = [c for c in codes if not is_valid_country_code(c)]
+            msg = ('""%s" must be a valid country code' if len(incorrect) == 1 else
+                   '""%s" must be valid country codes')
+            raise forms.ValidationError(msg % ', '.join(incorrect))
+
+        codes = list(codes)
+        codes.sort()
+        return ', '.join(codes)
+
+
+class IPLocationInline(admin.TabularInline):
+    model = models.IPLocation
+    form = IPLocationForm
+
+    fields = ['country_codes']
+    extra = 2
+
+
+@admin.register(models.RangeBasedIPGroup)
+class RangeBasedIPGroupAdmin(admin.ModelAdmin):
+    exclude = ('type',)
     inlines = [IPRangeInline]
 
 
-admin.site.register(models.Rule, RuleAdmin)
-admin.site.register(models.IPGroup, IPGroupAdmin)
+@admin.register(models.LocationBasedIPGroup)
+class LocationBasedIPGroupAdmin(admin.ModelAdmin):
+    exclude = ('type',)
+    inlines = [IPLocationInline]

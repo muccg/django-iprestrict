@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.test.utils import override_settings
@@ -8,10 +11,9 @@ from iprestrict import models
 from iprestrict import restrictor
 from iprestrict.middleware import IPRestrictMiddleware
 
-from datetime import datetime
-
 LOCAL_IP = '192.168.1.1'
 PROXY = '1.1.1.1'
+
 
 class MiddlewareRestrictsTest(TestCase):
     '''
@@ -46,9 +48,10 @@ class MiddlewareRestrictsTest(TestCase):
 
 
 def create_ip_allow_rule(ip=LOCAL_IP):
-    localip = models.IPGroup.objects.create(name='localip')
+    localip = models.RangeBasedIPGroup.objects.create(name='localip')
     models.IPRange.objects.create(ip_group=localip, first_ip=LOCAL_IP)
     models.Rule.objects.create(url_pattern='ALL', ip_group = localip, action='A')
+
 
 class MiddlewareAllowsTest(TestCase):
     def setUp(self):
@@ -67,7 +70,7 @@ class MiddlewareAllowsTest(TestCase):
         response = self.client.get('', REMOTE_ADDR = '10.1.1.1')
         self.assertEqual(response.status_code, 403)
 
-    @override_settings(TRUSTED_PROXIES=(PROXY,), ALLOW_PROXIES=False)
+    @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,), ALLOW_PROXIES=False)
     def test_middleware_allows_if_proxy_is_trusted(self):
         response = self.client.get('', REMOTE_ADDR = PROXY, HTTP_X_FORWARDED_FOR= LOCAL_IP)
         self.assertEqual(response.status_code, 404)
@@ -75,6 +78,7 @@ class MiddlewareAllowsTest(TestCase):
     def test_middleware_restricts_if_proxy_is_not_trusted(self):
         response = self.client.get('', REMOTE_ADDR = PROXY, HTTP_X_FORWARDED_FOR = LOCAL_IP)
         self.assertEqual(response.status_code, 403)
+
 
 class ReloadRulesTest(TestCase):
     def setUp(self):
@@ -86,6 +90,7 @@ class ReloadRulesTest(TestCase):
 
         response = self.client.get('', REMOTE_ADDR = LOCAL_IP)
         self.assertEqual(response.status_code, 404)
+
 
 class MiddlewareExtractClientIpTest(TestCase):
     def setUp(self):
@@ -106,7 +111,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, '')
 
-    @override_settings(TRUSTED_PROXIES=(PROXY,), ALLOW_PROXIES=False)
+    @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,))
     def test_single_proxy(self):
         self.middleware = IPRestrictMiddleware()
         request = self.factory.get('', REMOTE_ADDR=PROXY, HTTP_X_FORWARDED_FOR = LOCAL_IP)
@@ -114,7 +119,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, LOCAL_IP)
 
-    @override_settings(TRUSTED_PROXIES=(PROXY,'2.2.2.2','4.4.4.4'), ALLOW_PROXIES=False)
+    @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,'2.2.2.2','4.4.4.4'))
     def test_multiple_proxies_one_not_trusted(self):
         self.middleware = IPRestrictMiddleware()
         proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']
@@ -128,7 +133,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         else:
             self.fail('Should raise PermissionDenied exception')
 
-    @override_settings(TRUSTED_PROXIES=(PROXY,'2.2.2.2','3.3.3.3', '4.4.4.4'), ALLOW_PROXIES=False)
+    @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,'2.2.2.2','3.3.3.3', '4.4.4.4'))
     def test_multiple_proxies_all_trusted(self):
         self.middleware = IPRestrictMiddleware()
         proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']

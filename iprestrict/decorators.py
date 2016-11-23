@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from functools import wraps
 from django.utils.translation import ugettext as _
 from django.contrib.admin.forms import AdminAuthenticationForm
@@ -23,7 +26,9 @@ def superuser_required(view_func):
         if request.user.is_authenticated():
             return HttpResponseForbidden('Forbidden!')
 
-        assert hasattr(request, 'session'), "The Django admin requires session middleware to be installed. Edit your MIDDLEWARE_CLASSES setting to insert 'django.contrib.sessions.middleware.SessionMiddleware'."
+        assert hasattr(request, 'session'), ("The Django admin requires session middleware to be installed. "
+                                             "Edit your MIDDLEWARE_CLASSES setting to insert "
+                                             "'django.contrib.sessions.middleware.SessionMiddleware'.")
         defaults = {
             'template_name': 'admin/login.html',
             'authentication_form': AdminAuthenticationForm,

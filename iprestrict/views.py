@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -34,8 +37,11 @@ def test_rules_page(request):
 
 @superuser_required
 def test_match(request):
-    url = request.REQUEST['url']
-    ip = request.REQUEST['ip']
+    request_dict = request.GET
+    if request.method == 'POST':
+        request_dict = request.POST
+    url = request_dict['url']
+    ip = request_dict['ip']
 
     matching_rule_id, action = find_matching_rule(url, ip)
     rules = list_rules(matching_rule_id, url, ip)
@@ -74,7 +80,8 @@ def map_rule(r, matching_rule_id, url, ip):
         },
         'ip_group': {
             'name': r.ip_group.name,
-            'ranges': r.ip_group.ranges_str(),
+            'reverse_ip_group': 'NOT' if r.reverse_ip_group else '',
+            'ranges': r.ip_group.details_str(),
             'matchStatus': 'match' if r.matches_ip(ip) else 'noMatch'
         },
         'action': r.action_str(),
