@@ -3,22 +3,23 @@ from __future__ import unicode_literals
 
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
+from django.db import transaction
 
 from ... import models
 
 
 class Command(BaseCommand):
     help = 'Replaces the current rules in the DB with the rules in the given fixture file(s).'
-    args = "fixture [fixture ...]"
+
+    def add_arguments(self, parser):
+        parser.add_argument('fixture', nargs='+')
 
     def handle(self, *args, **options):
-        verbosity = int(options.get('verbosity', '1'))
+        fixtures = options.get('fixture', [])
 
-        self.delete_existing_rules()
-        if verbosity >= 1:
-            self.stdout.write('Successfully deleted rules')
-
-        call_command('loaddata', *args, verbosity=verbosity, interactive=False)
+        with transaction.atomic():
+            self.delete_existing_rules()
+            call_command('loaddata', *fixtures, **options)
 
     def delete_existing_rules(self):
         models.Rule.objects.all().delete()
