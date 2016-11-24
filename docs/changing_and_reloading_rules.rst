@@ -16,7 +16,7 @@ In case this is acceptable for you just set the following variable into your set
 
 The second possibility (which is the default behaviour) is to request a rule reload. The next time the middleware will receive a request the rules will be reloaded. There is a custom management command for reloading rules::
 
-  $ ./manage.py reloadrules
+  $ ./manage.py reload_rules
 
 The advantage of this approach is that you don't have to restart your server every time you change your rules.
 The disadvantage is that on each request a query will be executed that selects the first row from the ``reloadrulesrequest`` DB table.
@@ -35,9 +35,9 @@ After you changed the rules and are happy with them you can export them using::
 
 Then you can copy the new_rules.json file to your production server and import them with the custom management command ``import_rules``. For example if you've copied your rules file to ``/tmp`` you would use::
 
-  $ ./manage.py importrules /tmp/new_rules.json
+  $ ./manage.py import_rules /tmp/new_rules.json
 
 You would also have to reload the rules or restart the server (depending on what caching strategy you are using)::
 
-  $ ./manage.py reloadrules
+  $ ./manage.py reload_rules
 
