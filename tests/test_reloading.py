@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.core.management import call_command
 
 from iprestrict import models
 
 
-class ReloadViewTest(TestCase):
+class ReloadByViewTest(TestCase):
     IP = '192.168.1.1'
 
     def setUp(self):
@@ -22,11 +23,11 @@ class ReloadViewTest(TestCase):
         models.IPRange.objects.create(ip_group=localip, first_ip=self.IP)
         models.Rule.objects.create(url_pattern='ALL', ip_group = localip, action='A')
 
-    def test_reload_view(self):
-        # This test doesn't conform to unit test best practices.
-        # Unfortunately, it does depend on order so it is in one method
-        # instead of 3 methods, each asserting one thing
+    def reload_rules(self):
+        self.client.login(username='admin', password='pass')
+        self.client.get('/iprestrict/reload_rules')
 
+    def test_reload_view(self):
         # 1
         response = self.client.get('', REMOTE_ADDR = self.IP)
         self.assertEqual(response.status_code, 403, 'Should be restricted')
@@ -37,8 +38,11 @@ class ReloadViewTest(TestCase):
         self.assertEqual(response.status_code, 403, 'Should still be restricted - rules have not been reloaded')
 
         # 3 reload rules
-        # TODO I have to log in as superuser for this to work
-        self.client.login(username='admin', password='pass')
-        response = self.client.get('/iprestrict/reload_rules')
+        self.reload_rules()
         response = self.client.get('', REMOTE_ADDR = self.IP)
         self.assertEqual(response.status_code, 404, 'Should be allowed now')
+
+
+class ReloadByCommand(ReloadByViewTest):
+    def reload_rules(self):
+        call_command('reloadrules')
