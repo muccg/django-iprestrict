@@ -70,3 +70,15 @@ class AddIPToIPGroupTest(TestCase):
         self.assertEqual(added, 3)
         self.assertEqual(len(group.ranges()), 2)
         self.assertEqual(len(group.ranges(ip_type='ipv6')), 1)
+
+    def test_should_NOT_add_ip_if_ip_already_in_group(self):
+        call_command(self.CMD, self.BLACKLIST, self.IP1)
+        ip_count = models.IPRange.objects.filter(ip_group__name=self.BLACKLIST).count()
+        call_command(self.CMD, self.BLACKLIST, self.IP1)
+        ip_count_same = models.IPRange.objects.filter(ip_group__name=self.BLACKLIST).count()
+        call_command(self.CMD, self.BLACKLIST, self.IP1, self.IP2)
+        ip_count_adds_other = models.IPRange.objects.filter(ip_group__name=self.BLACKLIST).count()
+
+        self.assertEqual(ip_count, 1)
+        self.assertEqual(ip_count_same, 1, "shouldn't add the same IP again")
+        self.assertEqual(ip_count_adds_other, 2, "should add the other IP but not the same IP")
