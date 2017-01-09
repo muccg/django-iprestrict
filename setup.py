@@ -39,6 +39,7 @@ setup(
                                              for root, _, files in os.walk('iprestrict/{}'.format(d))
                                              for f in files]
     },
+    include_package_data=True,
     zip_safe=False,
     install_requires=[
         'Django>=1.8',
