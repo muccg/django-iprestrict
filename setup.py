@@ -11,6 +11,7 @@ def get_package_version(package):
             return m.group(1)
     return "UNKNOWN"
 
+
 setup(
     name='django-iprestrict',
     version=get_package_version("iprestrict"),
@@ -33,7 +34,11 @@ setup(
         'iprestrict.management.commands',
         'iprestrict.migrations',
     ],
-    include_package_data=True,
+    package_data={
+        'iprestrict': [os.path.join(root, f) for d in ('templates', 'static')
+                                             for root, _, files in os.walk('iprestrict/{}'.format(d))
+                                             for f in files]
+    },
     zip_safe=False,
     install_requires=[
         'Django>=1.8',
