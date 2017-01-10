@@ -4,7 +4,7 @@ python:
   - "3.5"
 env:
   global:
-    - COVERAGE=1 RUNTEST_ARGS="-v --noinput"
+    - RUNTEST_ARGS="-v --noinput"
   matrix:
     # Quality checks
     - TOXENV=flake8
@@ -16,8 +16,5 @@ env:
     - TOXENV=py35-django-19
     - TOXENV=py35-django-110
 install:
-  - pip install tox coveralls
-before_script:
-  - coverage erase
+  - pip install tox
 script: tox
-after_success: coveralls
