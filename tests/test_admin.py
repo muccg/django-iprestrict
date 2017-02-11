@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.test import TestCase
-from django.contrib.auth.models import User
 
 from iprestrict import admin, models
 from iprestrict.geoip import NO_COUNTRY
@@ -58,6 +57,27 @@ class IPRangeFormTest(TestCase):
         self.assertFalse(form.is_valid())
         self.assertIn("cidr_prefix_length", form.errors)
         self.assertIn("Must be a number between", "\n".join(form.errors["cidr_prefix_length"]))
+
+    def test_cidr_prefix_length_for_ipv6(self):
+        form_data = {
+            "ip_group": self.all_group.pk,
+            "first_ip": "::1",
+            "cidr_prefix_length": 127,
+        }
+        form = admin.IPRangeForm(data=form_data)
+        self.assertTrue(form.is_valid())
+
+    def test_ipv6_cidr_prefix_length_invalid(self):
+        form_data = {
+            "ip_group": self.all_group.pk,
+            "first_ip": "::1",
+            "cidr_prefix_length": 130,
+        }
+        form = admin.IPRangeForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("cidr_prefix_length", form.errors)
+        self.assertIn("Must be a number between", "\n".join(form.errors["cidr_prefix_length"]))
+
 
     def test_ip_types(self):
         form_data = {
