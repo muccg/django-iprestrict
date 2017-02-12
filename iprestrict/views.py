@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.core.validators import validate_ipv46_address
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 import json
@@ -43,22 +45,29 @@ def test_match(request):
     url = request_dict['url']
     ip = request_dict['ip']
 
+    try:
+        validate_ipv46_address(ip)
+    except ValidationError:
+        return HttpResponse(_test_match_result('Error', msg='Invalid IP address'))
+
     matching_rule_id, action = find_matching_rule(url, ip)
     rules = list_rules(matching_rule_id, url, ip)
 
     if matching_rule_id is None:
-        result = {
-            'action': 'Allowed',
-            'msg': 'No rules matched.',
-        }
+        action = 'Allowed'
+        msg = 'No rules matched.'
     else:
-        result = {
-            'action': action,
-            'msg': 'URL matched Rule highlighted below.'
-        }
-    result['rules'] = rules
+        msg = 'URL matched Rule highlighted below.'
 
-    return HttpResponse(json.dumps(result))
+    return HttpResponse(_test_match_result(action, msg, rules))
+
+
+def _test_match_result(action, msg=None, rules=None):
+    return json.dumps({
+        'action': action,
+        'msg': msg or '',
+        'rules': rules or [],
+    })
 
 
 def find_matching_rule(url, ip):

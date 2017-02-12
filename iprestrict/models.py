@@ -75,13 +75,15 @@ class RangeBasedIPGroup(IPGroup):
         verbose_name = 'IP Group'
 
     def load_ranges(self):
-        self._ranges = {'ipv4': [], 'ipv6': []}
+        self._ranges = {ipu.IPv4: [], ipu.IPv6: []}
         for r in self.iprange_set.all():
             self._ranges[r.ip_type].append(r)
 
     load = load_ranges
 
-    def ranges(self, ip_type='ipv4'):
+    def ranges(self, ip_type=None):
+        if ip_type is None:
+            return self._ranges[ipu.IPv4] + self._ranges[ipu.IPv6]
         return self._ranges[ip_type]
 
     def matches(self, ip):
