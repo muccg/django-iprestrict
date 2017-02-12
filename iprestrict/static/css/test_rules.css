@@ -18,10 +18,16 @@ p, table {
 input, button {
     font-size: 110%;
     padding: 5px;
+    margin: 3px;
+}
+
+#url {
+    width: 20em;
 }
 
 #ip {
-    width: 9em;
+    text-align: center;
+    width: 24em;
 }
 
 #result {
@@ -36,6 +42,9 @@ input, button {
     color: red;
 }
 
+#action.Error {
+    color: red;
+}
 
 table#rules {
     width: 75%;

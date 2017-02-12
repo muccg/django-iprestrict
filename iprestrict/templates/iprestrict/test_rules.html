@@ -87,11 +87,7 @@
 
        $("button").click(function(event){
          event.preventDefault();
-         var ip_pattern = /^((([2][5][0-5]|([2][0-4]|[1][0-9]|[0-9])?[0-9])\.){3})([2][5][0-5]|([2][0-4]|[1][0-9]|[0-9])?[0-9])$/;
-         if (! ip_pattern.test($("input[name='ip']").val())) {
-            alert('Invalid IP Address');
-            return;
-         }
+
          var data = $('form').serialize();
          $.getJSON('test_match', data, function(data) {
             $('#action').html(data.action);

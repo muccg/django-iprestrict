@@ -92,8 +92,8 @@ class RangeBasedIPGroupTest(TestCase):
 
     def test_matches_with_ranges(self):
         ipgroup = models.RangeBasedIPGroup.objects.create(name='Local IPs')
-        iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.1', last_ip='192.168.1.10')
-        iprange2 = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.100', last_ip='192.168.1.110')
+        models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.1', last_ip='192.168.1.10')
+        models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.100', last_ip='192.168.1.110')
 
         ipgroup.load_ranges()
 
@@ -108,19 +108,18 @@ class RangeBasedIPGroupTest(TestCase):
 
     def test_ipv6_and_ip4_are_separated(self):
         ipgroup = models.RangeBasedIPGroup.objects.create(name='Local IPs')
-        iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='::1')
-        iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='0.0.0.2')
+        models.IPRange.objects.create(ip_group=ipgroup, first_ip='::1')
+        models.IPRange.objects.create(ip_group=ipgroup, first_ip='0.0.0.2')
         ipgroup.load_ranges()
 
         self.assertFalse(ipgroup.matches('0.0.0.1'))
         self.assertTrue(ipgroup.matches('0.0.0.2'))
-        # TODO enable when IPv6 conversion to number works
-        #self.assertFalse(ipgroup.matches('::2'))
-        #self.assertTrue(ipgroup.matches('::1'))
+        self.assertFalse(ipgroup.matches('::2'))
+        self.assertTrue(ipgroup.matches('::1'))
 
     def test_matches_with_subnets(self):
         ipgroup = models.RangeBasedIPGroup.objects.create(name='Local IPs')
-        iprange = models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.0', cidr_prefix_length=30)
+        models.IPRange.objects.create(ip_group=ipgroup, first_ip='192.168.1.0', cidr_prefix_length=30)
 
         ipgroup.load_ranges()
 
@@ -133,7 +132,7 @@ class RangeBasedIPGroupTest(TestCase):
 
     def test_matches_subnet_first_ip_not_correct(self):
         ipgroup = models.RangeBasedIPGroup.objects.create(name='Local IPs')
-        iprange = models.IPRange.objects.create(ip_group=ipgroup, 
+        models.IPRange.objects.create(ip_group=ipgroup,
             first_ip='192.168.1.2', # Should be '192.168.1.1'
             cidr_prefix_length=30)
 

@@ -6,6 +6,7 @@ from django.core.management.base import CommandError
 from django.core.management import call_command
 
 from iprestrict import models
+from iprestrict import ip_utils as ipu
 
 
 class AddIPToIPGroupTest(TestCase):
@@ -15,7 +16,7 @@ class AddIPToIPGroupTest(TestCase):
         self.BLACKLIST = 'Blacklist'
         self.IP1 = '192.168.222.1'
         self.IP2 = '10.10.10.10'
-        self.IPv6 = '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+        self.IPv6 = '2001:db8:85a3::8a2e:0370:7334'
         self.group = models.RangeBasedIPGroup.objects.create(name=self.BLACKLIST)
         self.group = models.LocationBasedIPGroup.objects.create(name='locations')
 
@@ -68,8 +69,9 @@ class AddIPToIPGroupTest(TestCase):
         group = models.RangeBasedIPGroup.objects.get(name=self.BLACKLIST)
 
         self.assertEqual(added, 3)
-        self.assertEqual(len(group.ranges()), 2)
-        self.assertEqual(len(group.ranges(ip_type='ipv6')), 1)
+        self.assertEqual(len(group.ranges()), 3)
+        self.assertEqual(len(group.ranges(ip_type=ipu.IPv4)), 2)
+        self.assertEqual(len(group.ranges(ip_type=ipu.IPv6)), 1)
 
     def test_should_NOT_add_ip_if_ip_already_in_group(self):
         call_command(self.CMD, self.BLACKLIST, self.IP1)
