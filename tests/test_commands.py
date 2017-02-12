@@ -69,7 +69,8 @@ class AddIPToIPGroupTest(TestCase):
         group = models.RangeBasedIPGroup.objects.get(name=self.BLACKLIST)
 
         self.assertEqual(added, 3)
-        self.assertEqual(len(group.ranges()), 2)
+        self.assertEqual(len(group.ranges()), 3)
+        self.assertEqual(len(group.ranges(ip_type=ipu.IPv4)), 2)
         self.assertEqual(len(group.ranges(ip_type=ipu.IPv6)), 1)
 
     def test_should_NOT_add_ip_if_ip_already_in_group(self):
