@@ -75,7 +75,7 @@ def is_valid_country_code(code):
     if code == NO_COUNTRY:
         return True
     try:
-        countries.get(alpha2=code)
+        countries.get(alpha_2=code)
         return True
     except KeyError:
         return False
