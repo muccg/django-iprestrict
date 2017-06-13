@@ -1,2 +1,2 @@
-pycountry
+pycountry==17.5.14
 django-templatetag-handlebars==1.3.1
