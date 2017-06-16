@@ -46,7 +46,8 @@ class IPGroup(models.Model):
         pass
 
     def save(self, *args, **kwargs):
-        self.type = self.TYPE
+        if self.TYPE is not None:
+            self.type = self.TYPE
         super(IPGroup, self).save(*args, **kwargs)
 
     def __str__(self):
