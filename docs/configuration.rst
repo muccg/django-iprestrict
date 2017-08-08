@@ -159,6 +159,8 @@ Settings
 Django IP Restrict has settings to adapt to the environment in which
 your app is hosted in.
 
+.. _geoip-enabled-reference-label:
+
 IPRESTRICT_GEOIP_ENABLED
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
