@@ -196,3 +196,14 @@ Default: ``[]`` (Empty List)
 Use this setting when your app is hosted behind a reverse proxy. When
 values are provided, they will be checked against the HTTP
 ``X-Forwarded-For`` header to determine the true client IP address.
+
+
+IPRESTRICT_TRUST_ALL_PROXIES
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Default: ``False``
+
+Use this setting when using a managed proxy with a dynamic IP (like when
+behind an AWS Load Balancer, or other cloud equivalent). When this
+setting is ``True``, Django IP Restrict will always check the HTTP
+``X-Forwarded-For`` header to determine the true client IP address.
