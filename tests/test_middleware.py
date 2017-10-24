@@ -86,7 +86,7 @@ class ReloadRulesTest(TestCase):
 
     def test_reload_with_custom_command(self):
         from django.core.management import call_command
-        call_command('reloadrules', verbosity=0)
+        call_command('reload_rules', verbosity=0)
 
         response = self.client.get('', REMOTE_ADDR = LOCAL_IP)
         self.assertEqual(response.status_code, 404)
