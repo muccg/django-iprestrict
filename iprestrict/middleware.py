@@ -50,9 +50,11 @@ class IPRestrictMiddleware(MiddlewareMixin):
             if forwarded_for:
                 closest_proxy = client_ip
                 client_ip = forwarded_for.pop(0)
+                if self.trust_all_proxies:
+                    return client_ip
                 proxies = [closest_proxy] + forwarded_for
                 for proxy in proxies:
-                    if not self.trust_all_proxies and proxy not in self.trusted_proxies:
+                    if proxy not in self.trusted_proxies:
                         logger.warn("Client IP %s forwarded by untrusted proxy %s" % (client_ip, proxy))
                         raise exceptions.PermissionDenied
         return client_ip
