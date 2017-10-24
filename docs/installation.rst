@@ -30,6 +30,8 @@ The country based lookups are optional, if you need it you can install them with
 
     pip install django-iprestrict[geoip]
 
+**Note:** if you're not using the country based lookups you will have to set the ``IPRESTRICT_GEOIP_ENABLED`` setting to ``False`` in your ``settings.py``. See: :ref:`geoip-enabled-reference-label`.
+
 Development
 ^^^^^^^^^^^
 

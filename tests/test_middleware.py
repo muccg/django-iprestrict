@@ -86,7 +86,7 @@ class ReloadRulesTest(TestCase):
 
     def test_reload_with_custom_command(self):
         from django.core.management import call_command
-        call_command('reloadrules', verbosity=0)
+        call_command('reload_rules', verbosity=0)
 
         response = self.client.get('', REMOTE_ADDR = LOCAL_IP)
         self.assertEqual(response.status_code, 404)
@@ -143,3 +143,12 @@ class MiddlewareExtractClientIpTest(TestCase):
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, LOCAL_IP)
 
+    @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,), IPRESTRICT_TRUST_ALL_PROXIES=True)
+    def test_trust_all_proxies_on(self):
+        self.middleware = IPRestrictMiddleware()
+        proxies = ['1.1.1.1', '2.2.2.2', '3.3.3.3', '4.4.4.4']
+        request = self.factory.get('', REMOTE_ADDR=PROXY,
+           HTTP_X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
+
+        client_ip = self.middleware.extract_client_ip(request)
+        self.assertEquals(client_ip, LOCAL_IP)

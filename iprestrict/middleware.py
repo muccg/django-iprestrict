@@ -30,6 +30,7 @@ class IPRestrictMiddleware(MiddlewareMixin):
         self.trusted_proxies = tuple(get_setting('IPRESTRICT_TRUSTED_PROXIES', 'TRUSTED_PROXIES', []))
         self.reload_rules = get_reload_rules_setting()
         self.ignore_proxy_header = bool(get_setting('IPRESTRICT_IGNORE_PROXY_HEADER', 'IGNORE_PROXY_HEADER', False))
+        self.trust_all_proxies = bool(get_setting('IPRESTRICT_TRUST_ALL_PROXIES', 'TRUST_ALL_PROXIES', False))
 
     def process_request(self, request):
         if self.reload_rules:
@@ -49,6 +50,8 @@ class IPRestrictMiddleware(MiddlewareMixin):
             if forwarded_for:
                 closest_proxy = client_ip
                 client_ip = forwarded_for.pop(0)
+                if self.trust_all_proxies:
+                    return client_ip
                 proxies = [closest_proxy] + forwarded_for
                 for proxy in proxies:
                     if proxy not in self.trusted_proxies:
