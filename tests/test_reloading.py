@@ -45,4 +45,4 @@ class ReloadByViewTest(TestCase):
 
 class ReloadByCommand(ReloadByViewTest):
     def reload_rules(self):
-        call_command('reloadrules')
+        call_command('reload_rules')
