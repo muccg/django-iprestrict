@@ -10,7 +10,8 @@ import iprestrict.urls
 
 admin.autodiscover()
 
+app_name = "iprestrict"
 urlpatterns = [
-    url(r'^iprestrict/', include(iprestrict.urls.urlpatterns, namespace='iprestrict')),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^iprestrict/', include('iprestrict.urls', namespace='iprestrict')),
+    url(r'^admin/', admin.site.urls),
 ] + staticfiles_urlpatterns()

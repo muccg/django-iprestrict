@@ -23,7 +23,7 @@ def superuser_required(view_func):
             # The user is valid. Continue to the admin page.
             return view_func(request, *args, **kwargs)
 
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return HttpResponseForbidden('Forbidden!')
 
         assert hasattr(request, 'session'), ("The Django admin requires session middleware to be installed. "

@@ -32,11 +32,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='ipgroup',
             name='type',
-            field=models.CharField(default=b'range', max_length=10, choices=[(b'location', b'Location based'), (b'range', b'Range based')]),
+            field=models.CharField(default=b'range', max_length=10, choices=[('location', 'Location based'), ('range', 'Range based')]),
         ),
         migrations.AddField(
             model_name='iplocation',
             name='ip_group',
-            field=models.ForeignKey(to='iprestrict.IPGroup'),
+            field=models.ForeignKey(to='iprestrict.IPGroup', on_delete=models.CASCADE),
         ),
     ]

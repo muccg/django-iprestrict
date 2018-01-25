@@ -33,6 +33,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='ipgroup',
             name='type',
-            field=models.CharField(default=b'range', max_length=10, choices=[(b'location', b'location based'), (b'range', b'range based')]),
+            field=models.CharField(default='range', max_length=10, choices=[('location', 'location based'), ('range', 'range based')]),
         ),
     ]
