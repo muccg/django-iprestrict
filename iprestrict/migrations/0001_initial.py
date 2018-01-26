@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
                 ('first_ip', models.GenericIPAddressField()),
                 ('cidr_prefix_length', models.PositiveSmallIntegerField(null=True, blank=True)),
                 ('last_ip', models.GenericIPAddressField(null=True, blank=True)),
-                ('ip_group', models.ForeignKey(to='iprestrict.IPGroup')),
+                ('ip_group', models.ForeignKey(to='iprestrict.IPGroup', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'IP Range',
@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('url_pattern', models.CharField(max_length=500)),
                 ('action', models.CharField(default=b'D', max_length=1, choices=[(b'A', b'ALLOW'), (b'D', b'DENY')])),
                 ('rank', models.IntegerField(blank=True)),
-                ('ip_group', models.ForeignKey(default=1, to='iprestrict.IPGroup')),
+                ('ip_group', models.ForeignKey(default=1, to='iprestrict.IPGroup', on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['rank', 'id'],

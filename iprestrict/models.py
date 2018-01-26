@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import re
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from . import ip_utils as ipu
@@ -124,7 +124,7 @@ class IPRange(models.Model):
     class Meta:
         verbose_name = "IP Range"
 
-    ip_group = models.ForeignKey(IPGroup)
+    ip_group = models.ForeignKey(IPGroup, on_delete=models.CASCADE)
     first_ip = models.GenericIPAddressField()
     cidr_prefix_length = models.PositiveSmallIntegerField(null=True, blank=True)
     last_ip = models.GenericIPAddressField(null=True, blank=True)
@@ -173,7 +173,7 @@ class IPLocation(models.Model):
     class Meta:
         verbose_name = "IP Location"
 
-    ip_group = models.ForeignKey(IPGroup)
+    ip_group = models.ForeignKey(IPGroup, on_delete=models.CASCADE)
     country_codes = models.CharField(max_length=2000, help_text='Comma-separated list of 2 character country codes')
 
     def __contains__(self, country_code):
@@ -195,7 +195,7 @@ class Rule(models.Model):
     )
 
     url_pattern = models.CharField(max_length=500)
-    ip_group = models.ForeignKey(IPGroup, default=1)
+    ip_group = models.ForeignKey(IPGroup, default=1, on_delete=models.CASCADE)
     reverse_ip_group = models.BooleanField(default=False)
     action = models.CharField(max_length=1, choices=ACTION_CHOICES, default='D')
     rank = models.IntegerField(blank=True)

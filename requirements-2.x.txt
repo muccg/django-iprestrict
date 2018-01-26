@@ -1,0 +1,2 @@
+-r common-requirements.txt
+Django>=2.0
