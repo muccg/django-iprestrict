@@ -32,17 +32,19 @@ INSTALLED_APPS = (
     'iprestrict',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'iprestrict.middleware.IPRestrictMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
 )
+
+# For Django <= 1.11
+MIDDLEWARE_CLASSES = MIDDLEWARE + ('django.contrib.auth.middleware.SessionAuthenticationMiddleware',)
 
 ROOT_URLCONF = 'tests.test_urls'
 

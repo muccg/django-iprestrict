@@ -45,7 +45,7 @@ class IPRangeForm(forms.ModelForm):
         if last_ip:
             if version != ipu.get_version(last_ip):
                 raise forms.ValidationError(
-                        "Last IP should be the same type as First IP (%s)" % version)
+                    "Last IP should be the same type as First IP (%s)" % version)
             if ipu.to_number(first_ip) > ipu.to_number(last_ip):
                 raise forms.ValidationError("Last IP should be greater than First IP")
 
