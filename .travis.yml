@@ -9,6 +9,12 @@ env:
     # Quality checks
     - TOXENV=flake8
     # Supported python/django versions
+    - TOXENV=py27-django-18
+    - TOXENV=py27-django-19
+    - TOXENV=py27-django-110
+    - TOXENV=py35-django-18
+    - TOXENV=py35-django-19
+    - TOXENV=py35-django-110
     - TOXENV=py35-django-2
 install:
   - pip install tox

@@ -43,6 +43,9 @@ MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
 )
 
+# For Django <= 1.11
+MIDDLEWARE_CLASSES = MIDDLEWARE + ('django.contrib.auth.middleware.SessionAuthenticationMiddleware',)
+
 ROOT_URLCONF = 'tests.test_urls'
 
 TEMPLATES = [

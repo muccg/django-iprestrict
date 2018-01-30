@@ -8,8 +8,7 @@ from django.contrib.auth.views import login
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import HttpResponseForbidden
 
-# Copied from django staff_member_required
-# Why isn't this provided by Django?
+# Copied from django staff_member_required. Why isn't this provided by Django?
 
 
 def superuser_required(view_func):
@@ -23,12 +22,20 @@ def superuser_required(view_func):
             # The user is valid. Continue to the admin page.
             return view_func(request, *args, **kwargs)
 
-        if request.user.is_authenticated:
-            return HttpResponseForbidden('Forbidden!')
+        # Django 2.x
+        if isinstance(request.user.is_authenticated, bool):
+            if request.user.is_authenticated:
+                return HttpResponseForbidden('Forbidden!')
+        else:
+            # Django <= 1.11
+            if request.user.is_authenticated():
+                return HttpResponseForbidden('Forbidden!')
 
-        assert hasattr(request, 'session'), ("The Django admin requires session middleware to be installed. "
-                                             "Edit your MIDDLEWARE_CLASSES setting to insert "
-                                             "'django.contrib.sessions.middleware.SessionMiddleware'.")
+        assert hasattr(request, 'session'), (
+            "The Django admin requires session middleware to be installed. "
+            "Edit your MIDDLEWARE_CLASSES setting to insert "
+            "'django.contrib.sessions.middleware.SessionMiddleware'."
+        )
         defaults = {
             'template_name': 'admin/login.html',
             'authentication_form': AdminAuthenticationForm,

@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.core.exceptions import ValidationError
-from django.urls import reverse
 from django.core.validators import validate_ipv46_address
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
@@ -10,6 +9,11 @@ import json
 
 from . import models
 from .decorators import superuser_required
+
+try:
+    from django.urls import reverse
+except ImportError:
+    from django.core.urlresolvers import reverse
 
 
 @superuser_required
