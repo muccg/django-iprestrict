@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from functools import wraps
+import inspect
+
 from django.utils.translation import ugettext as _
 from django.contrib.admin.forms import AdminAuthenticationForm
 from django.contrib.auth.views import login
@@ -22,14 +24,8 @@ def superuser_required(view_func):
             # The user is valid. Continue to the admin page.
             return view_func(request, *args, **kwargs)
 
-        # Django 2.x
-        if isinstance(request.user.is_authenticated, bool):
-            if request.user.is_authenticated:
-                return HttpResponseForbidden('Forbidden!')
-        else:
-            # Django <= 1.11
-            if request.user.is_authenticated():
-                return HttpResponseForbidden('Forbidden!')
+        if _is_authenticated(request.user):
+            return HttpResponseForbidden('Forbidden!')
 
         assert hasattr(request, 'session'), (
             "The Django admin requires session middleware to be installed. "
@@ -47,3 +43,10 @@ def superuser_required(view_func):
         }
         return login(request, **defaults)
     return _checklogin
+
+
+def _is_authenticated(user):
+    # is_authenticated is a property now, but used to be a method before Django 1.10
+    if inspect.is_method(user.is_authenticated):
+        return user.is_authenticated()
+    return user.is_authenticated

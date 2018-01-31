@@ -2,16 +2,18 @@
 from __future__ import unicode_literals
 
 import re
+
 from django.db import models
 from django.utils import timezone
-from . import ip_utils as ipu
-from .geoip import get_geoip, NO_COUNTRY
-
 
 try:
     from django.urls import reverse
 except ImportError:
+    # Pre Django 2.x
     from django.core.urlresolvers import reverse
+
+from . import ip_utils as ipu
+from .geoip import get_geoip, NO_COUNTRY
 
 
 TYPE_LOCATION = 'location'
