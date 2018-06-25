@@ -5,6 +5,7 @@ import re
 
 from django.db import models
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 
 try:
     from django.urls import reverse
@@ -253,14 +254,12 @@ class Rule(models.Model):
 
     def move_up_url(self):
         url = reverse('iprestrict:move_rule_up', args=[self.pk])
-        return '<a href="%s">Move Up</a>' % url
-    move_up_url.allow_tags = True
+        return mark_safe('<a href="%s">Move Up</a>' % url)
     move_up_url.short_description = 'Move Up'
 
     def move_down_url(self):
         url = reverse('iprestrict:move_rule_down', args=[self.pk])
-        return '<a href="%s">Move Down</a>' % url
-    move_down_url.allow_tags = True
+        return mark_safe('<a href="%s">Move Down</a>' % url)
     move_down_url.short_description = 'Move Down'
 
     def move_down(self):
