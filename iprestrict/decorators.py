@@ -6,7 +6,12 @@ import inspect
 
 from django.utils.translation import ugettext as _
 from django.contrib.admin.forms import AdminAuthenticationForm
-from django.contrib.auth.views import login
+
+try:
+    from django.contrib.auth.views import login
+except ImportError:
+    from django.contrib.auth import login
+
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.http import HttpResponseForbidden
 
