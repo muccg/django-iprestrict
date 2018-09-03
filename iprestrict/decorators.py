@@ -1,52 +1,20 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
-from functools import wraps
-import inspect
-
-from django.utils.translation import ugettext as _
-from django.contrib.admin.forms import AdminAuthenticationForm
-from django.contrib.auth.views import login
 from django.contrib.auth import REDIRECT_FIELD_NAME
-from django.http import HttpResponseForbidden
-
-# Copied from django staff_member_required. Why isn't this provided by Django?
+from django.contrib.auth.decorators import user_passes_test
 
 
-def superuser_required(view_func):
+# Based on django django.contrib.admin.views.decorators.staff_member_required.
+def superuser_required(view_func=None, redirect_field_name=REDIRECT_FIELD_NAME,
+                       login_url='admin:login'):
     """
-    Decorator for views that checks that the user is logged in and is a staff
-    member, displaying the login page if necessary.
+    Decorator for views that checks that the user is logged in and is a superuser
+    member, redirecting to the login page if necessary.
     """
-    @wraps(view_func)
-    def _checklogin(request, *args, **kwargs):
-        if request.user.is_active and request.user.is_superuser:
-            # The user is valid. Continue to the admin page.
-            return view_func(request, *args, **kwargs)
-
-        if _is_authenticated(request.user):
-            return HttpResponseForbidden('Forbidden!')
-
-        assert hasattr(request, 'session'), (
-            "The Django admin requires session middleware to be installed. "
-            "Edit your MIDDLEWARE_CLASSES setting to insert "
-            "'django.contrib.sessions.middleware.SessionMiddleware'."
-        )
-        defaults = {
-            'template_name': 'admin/login.html',
-            'authentication_form': AdminAuthenticationForm,
-            'extra_context': {
-                'title': _('Log in'),
-                'app_path': request.get_full_path(),
-                REDIRECT_FIELD_NAME: request.get_full_path(),
-            },
-        }
-        return login(request, **defaults)
-    return _checklogin
-
-
-def _is_authenticated(user):
-    # is_authenticated is a property now, but used to be a method before Django 1.10
-    if inspect.is_method(user.is_authenticated):
-        return user.is_authenticated()
-    return user.is_authenticated
+    actual_decorator = user_passes_test(
+        lambda u: u.is_active and u.is_superuser,
+        login_url=login_url,
+        redirect_field_name=redirect_field_name
+    )
+    if view_func:
+        return actual_decorator(view_func)
+    return actual_decorator
