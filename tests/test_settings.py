@@ -28,7 +28,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'templatetag_handlebars',
     'iprestrict',
 )
 
@@ -117,8 +116,8 @@ LOGGING = {
             'class': 'django.utils.log.AdminEmailHandler'
         },
         'console': {
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
     },

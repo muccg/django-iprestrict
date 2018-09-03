@@ -43,7 +43,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django>=1.8',
-        'django-templatetag-handlebars==1.3.1',
     ],
     extras_require={
         'geoip': [

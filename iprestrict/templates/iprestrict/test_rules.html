@@ -1,5 +1,4 @@
 {% load staticfiles %}
-{% load templatetag_handlebars %}
 <!doctype html>
 <html>
 <head>
@@ -7,7 +6,7 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/test_rules.css' %}" />
     <script src="{% static 'javascript/lib/jquery-min.js' %}"></script>
-    <script src="{% static 'javascript/lib/handlebars.js' %}"></script>
+    <script src="{% static 'javascript/lib/handlebars.min.js' %}"></script>
 </head>
 
 <body>
@@ -40,8 +39,7 @@
 </table>
 
 <p id="result">
-    <span id='action'></span>
-    <span id='msg'></span>
+    <span id='result'></span>
 </p>
 
 
@@ -64,8 +62,15 @@
 </table>
 
 
-{% tplhandlebars "rules-template" %}
-    {{#each rules}}
+<script id="result-template" type="text/x-handlebars-template">
+{% verbatim %}
+  <span class='{{action}}'>{{ action }}</span> - {{ msg }}
+{% endverbatim %}
+</script>
+
+<script id="rules-template" type="text/x-handlebars-template">
+{% verbatim %}
+    {{#each this}}
         {{#if this.matched }}
             <tr class='ruleMatch'>
         {{else}}
@@ -79,27 +84,23 @@
                 <td>{{this.action}}</td>
             </tr>
     {{/each}}
-{% endtplhandlebars %}
+{% endverbatim %}
+</script>
 
 <script>
      $(document).ready(function(){
-       var template = Handlebars.compile($('#rules-template').html());
+       var resultTemplate = Handlebars.compile($('#result-template').html());
+       var rulesTemplate = Handlebars.compile($('#rules-template').html());
 
        $("button").click(function(event){
          event.preventDefault();
 
          var data = $('form').serialize();
          $.getJSON('test_match', data, function(data) {
-            $('#action').html(data.action);
-            $('#action').removeClass();
-            $('#action').addClass(data.action);
-            $('#msg').html(' - ' + data.msg);
-
-            $('#rules-body').empty();
-            $('#rules-body').append(template(data));
-         }); 
+            $('#result').html(resultTemplate(data));
+            $('#rules-body').html(rulesTemplate(data.rules));
+         });
        });
-         
      });
 </script>
 

@@ -5,7 +5,6 @@ Requirements
 ------------
 
 * ``Django 1.8+``
-* ``django-templatetag-handlebars 1.3.1+``
 
 Additionally, if you would like to use country based restrictions you will need:
 

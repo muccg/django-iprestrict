@@ -34,15 +34,15 @@ input, button {
     font-size: 1.2em;
 }
 
-#action.Allowed {
+#result > .Allowed {
     color: green;
 }
 
-#action.Denied {
+#result > .Denied {
     color: red;
 }
 
-#action.Error {
+#result > .Error {
     color: red;
 }
 

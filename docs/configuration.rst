@@ -4,12 +4,10 @@ Configuration
 Setting up the app
 ------------------
 
-Add ``iprestrict``, and ``templatetag_handlebars`` to
-``INSTALLED_APPS`` in your settings file::
+Add ``iprestrict`` to ``INSTALLED_APPS`` in your settings file::
 
   INSTALLED_APPS = (
     ...
-    'templatetag_handlebars',
     'iprestrict',
   )
 
