@@ -1,33 +1,16 @@
 sudo: false
 language: python
 python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
   - "3.6"
+  # TODO Python 3.7 not working on Travis CI
+  # https://github.com/travis-ci/travis-ci/issues/9552
+  # - "3.7"
 env:
   global:
     - RUNTEST_ARGS="-v --noinput"
-  matrix:
-    # Quality checks
-    - TOXENV=flake8
-    # Supported python/django versions
-    - TOXENV=py27-django-18
-    - TOXENV=py27-django-19
-    - TOXENV=py27-django-110
-    - TOXENV=py27-django-111
-    - TOXENV=py34-django-18
-    - TOXENV=py34-django-19
-    - TOXENV=py34-django-110
-    - TOXENV=py34-django-111
-    - TOXENV=py34-django-20
-    - TOXENV=py35-django-18
-    - TOXENV=py35-django-19
-    - TOXENV=py35-django-110
-    - TOXENV=py35-django-111
-    - TOXENV=py35-django-20
-    - TOXENV=py36-django-18
-    - TOXENV=py36-django-19
-    - TOXENV=py36-django-110
-    - TOXENV=py36-django-111
-    - TOXENV=py36-django-20
 install:
-  - pip install tox
+  - pip install tox-travis
 script: tox
