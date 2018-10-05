@@ -136,6 +136,7 @@ class IPRange(models.Model):
     first_ip = models.GenericIPAddressField()
     cidr_prefix_length = models.PositiveSmallIntegerField(null=True, blank=True)
     last_ip = models.GenericIPAddressField(null=True, blank=True)
+    description = models.CharField(max_length=500, blank=True)
 
     @property
     def start(self):

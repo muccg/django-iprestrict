@@ -63,7 +63,7 @@ class IPRangeInline(admin.TabularInline):
     model = models.IPRange
     form = IPRangeForm
 
-    fields = ['first_ip', 'cidr_prefix_length', 'last_ip', 'ip_type']
+    fields = ['first_ip', 'cidr_prefix_length', 'last_ip', 'ip_type', 'description']
     readonly_fields = ['ip_type']
     extra = 2
 
