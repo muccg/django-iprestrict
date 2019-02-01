@@ -111,10 +111,18 @@ class MiddlewareExtractClientIpTest(TestCase):
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, '')
 
+    @override_settings(IPRESTRICT_TRUST_ALL_PROXIES=True)
+    def test_ignore_bad_forwarded_addr(self):
+        self.middleware = IPRestrictMiddleware()
+        request = self.factory.get('', REMOTE_ADDR=LOCAL_IP, HTTP_X_FORWARDED_FOR="unknown,1.2.3.4")
+
+        client_ip = self.middleware.extract_client_ip(request)
+        self.assertEquals(client_ip, '1.2.3.4')
+
     @override_settings(IPRESTRICT_TRUSTED_PROXIES=(PROXY,))
     def test_single_proxy(self):
         self.middleware = IPRestrictMiddleware()
-        request = self.factory.get('', REMOTE_ADDR=PROXY, HTTP_X_FORWARDED_FOR = LOCAL_IP)
+        request = self.factory.get('', REMOTE_ADDR=PROXY, HTTP_X_FORWARDED_FOR=LOCAL_IP)
 
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, LOCAL_IP)
@@ -123,9 +131,9 @@ class MiddlewareExtractClientIpTest(TestCase):
     def test_multiple_proxies_one_not_trusted(self):
         self.middleware = IPRestrictMiddleware()
         proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']
-        request = self.factory.get('', REMOTE_ADDR=PROXY, 
+        request = self.factory.get('', REMOTE_ADDR=PROXY,
            HTTP_X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
-        
+
         try:
             client_ip = self.middleware.extract_client_ip(request)
         except exceptions.PermissionDenied:
@@ -139,7 +147,7 @@ class MiddlewareExtractClientIpTest(TestCase):
         proxies = ['2.2.2.2', '3.3.3.3', '4.4.4.4']
         request = self.factory.get('', REMOTE_ADDR=PROXY, 
            HTTP_X_FORWARDED_FOR = ', '.join([LOCAL_IP] + proxies))
-        
+
         client_ip = self.middleware.extract_client_ip(request)
         self.assertEquals(client_ip, LOCAL_IP)
 
