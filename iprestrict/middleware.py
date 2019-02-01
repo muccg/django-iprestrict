@@ -62,7 +62,8 @@ class IPRestrictMiddleware(MiddlewareMixin):
     def get_forwarded_for(self, request):
         hdr = request.META.get('HTTP_X_FORWARDED_FOR')
         if hdr is not None:
-            return [ip.strip() for ip in hdr.split(',')]
+            # Exclude unknown which sometimes precedes an IP in Heroku.
+            return [ip.strip() for ip in hdr.split(',') if ip != 'unknown']
         else:
             return []
 
