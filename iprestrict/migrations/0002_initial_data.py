@@ -55,5 +55,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(create_data),
+        migrations.RunPython(create_data, lambda *args: None),
     ]
