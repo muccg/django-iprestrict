@@ -6,7 +6,7 @@ import json
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_ipv46_address
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 
 try:
     from django.urls import reverse
@@ -40,7 +40,7 @@ def reload_rules(request):
 
 @superuser_required
 def test_rules_page(request):
-    return render_to_response('iprestrict/test_rules.html')
+    return render(request, 'iprestrict/test_rules.html')
 
 
 @superuser_required
