@@ -92,5 +92,5 @@ def _ip_to_number(ip, separator='.', group_size=2 ** 8, base=10):
     return nr
 
 
-def reject_empty(l):
-    return [x for x in l if x]
+def reject_empty(a_list):
+    return [x for x in a_list if x]
